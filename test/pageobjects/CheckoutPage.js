@@ -1,5 +1,5 @@
 // pageobjects/CheckoutPage.js
-export default class CheckoutPage {
+class CheckoutPage {
     constructor() {
         
         // Step Buttons
@@ -239,3 +239,4 @@ export default class CheckoutPage {
         await this.blurField();
     }
 }
+export default new CheckoutPage();
