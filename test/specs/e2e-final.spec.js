@@ -4,13 +4,13 @@ import CheckoutPage from '../pageobjects/CheckoutPage.js';
 
 describe('Home Page tests', () => {
     it('Full end-to-end checkout flow', async () => {
-        const homePage = new HomePage();
+        
         const cartPage = new CartPage();
         const checkoutPage = new CheckoutPage();
 
-        await homePage.openApp();
-        await homePage.addFirstItem();
-        await homePage.openCart();
+        await HomePage.openApp();
+        await HomePage.addFirstItem();
+        await HomePage.openCart();
         await cartPage.proceedToCheckout();
 
         await checkoutPage.clickStep2Next();
