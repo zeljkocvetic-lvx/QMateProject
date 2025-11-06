@@ -1,9 +1,9 @@
 // pageobjects/CheckoutPage.js
 class CheckoutPage {
     constructor() {
-        
+
         // Step Buttons
-        
+
         this.step2NextButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
@@ -66,9 +66,9 @@ class CheckoutPage {
             }
         };
 
-        
+
         // Credit Card Selectors
-        
+
         this.cardHolderInput = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
@@ -109,9 +109,9 @@ class CheckoutPage {
             }
         };
 
-        
+
         // Delivery Address Selectors
-        
+
         this.addressInput = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
@@ -145,9 +145,9 @@ class CheckoutPage {
         };
     }
 
-    
+
     // Step Button Methods
-    
+
     async clickStep2Next() {
         await ui5.userInteraction.click(this.step2NextButton);
     }
@@ -177,9 +177,9 @@ class CheckoutPage {
         await ui5.assertion.expectToBeVisible(this.orderSuccessText);
     }
 
-    
+
     // Credit Card Atomic Actions
-    
+
     async enterCardHolderName(name) {
         await ui5.userInteraction.clearAndFill(this.cardHolderInput, name);
     }
@@ -208,9 +208,9 @@ class CheckoutPage {
         await this.closeDatePicker();
     }
 
-    
+
     // Delivery Address Atomic Actions
-    
+
     async enterAddress(address) {
         await ui5.userInteraction.clearAndFill(this.addressInput, address);
     }

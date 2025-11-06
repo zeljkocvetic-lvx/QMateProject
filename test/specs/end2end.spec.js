@@ -114,7 +114,7 @@ describe('Home Page tests', () => {
         };
         await ui5.userInteraction.click(step4nextButtonSelector);
 
-    
+
         // Fill delivery address
 
         //address
