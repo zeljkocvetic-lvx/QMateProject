@@ -21,7 +21,8 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        './test/specs/*.spec.js'
+        // use feature files for cucumber
+        './test/features/*.feature'
     ],
     // Patterns to exclude.
     exclude: [
@@ -52,13 +53,13 @@ export const config = {
     capabilities: [{
         browserName: 'chrome',
         'goog:chromeOptions': {
-          binary: '/Applications/Google Chrome 2.app/Contents/MacOS/Google Chrome',
-        args: [
-            '--no-sandbox',
-            '--lang-en-US',
-            '--start-maximized',
-            // '--headless',
-        ]
+            binary: '/Applications/Google Chrome 2.app/Contents/MacOS/Google Chrome',
+            args: [
+                '--no-sandbox',
+                '--lang-en-US',
+                '--start-maximized',
+                // '--headless',
+            ]
         }
     }],
 
@@ -109,7 +110,7 @@ export const config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: [['@sap_oss/wdio-qmate-service']],
+    services: ['@sap_oss/wdio-qmate-service'],
 
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -117,8 +118,16 @@ export const config = {
     //
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
-    framework: 'mocha',
-    
+    framework: 'cucumber',
+
+    //
+    // Cucumber options
+    cucumberOpts: {
+        // require step definitions
+        require: ['./test/step-definitions/*.js'],
+        // timeout for step definitions
+        timeout: 60000
+    },
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,
@@ -135,12 +144,12 @@ export const config = {
     reporters: [['allure', {
         outputDir: 'allure-results',
         disableWebdriverStepsReporting: true,
-        disableWebdriverScreenshotsReporting: true,
+        disableWebdriverScreenshotsReporting: false,
     }]],
 
     // Options to be passed to Mocha.
-    // See the full list at http://mochajs.org/
-    mochaOpts: {
+    //See the full list at http://mochajs.org/
+    mochaOpts: { //uncoment for mocha
         ui: 'bdd',
         timeout: 60000
     },
@@ -196,9 +205,9 @@ export const config = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    before: async function () {
-        await browser.url('test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon');
-     },
+    // before: async function () {
+    //     await browser.url('test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon');
+    // },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name
@@ -239,9 +248,10 @@ export const config = {
      * @param {boolean} result.passed    true if test has passed, otherwise false
      * @param {object}  result.retries   information about spec related retries, e.g. { attempts: 0, limit: 0 }
      */
-    afterTest: async function(test, context, { error, result, duration, passed, retries }) {
+    afterTest: async function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {
-            await browser.takeScreenshot();
+            const screenshot = await browser.takeScreenshot();
+            addAttachment('Error Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
         }
     },
 

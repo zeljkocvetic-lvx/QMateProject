@@ -1,176 +1,233 @@
-// pageobjects/CheckoutPage.js
-export default class CheckoutPage {
-    constructor() {}
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
-    // Step 2 Next button
-    async clickStep2Next() {
-        await ui5.userInteraction.click({
+class CheckoutPage {
+    constructor() {
+        this.step2NextButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
                 metadata: "sap.m.Button",
                 id: "*contentsStep-nextButton"
             }
-        });
-    }
+        };
 
-    // Step 3 Payment step button
-    async clickStep3Payment() {
-        await ui5.userInteraction.click({
+        this.step3PaymentButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
                 metadata: "sap.m.Button",
                 id: "container-cart---checkoutView--paymentTypeStep-nextButton"
             }
-        });
-    }
+        };
 
-    // Fill credit card details
-    async fillCreditCardDetails(holderName, number, cvv, expiration) {
-        // Holder name
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "container-cart---checkoutView--creditCardHolderName"
-            }
-        }, holderName);
-
-        // Card number
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.MaskInput",
-                id: "*creditCardNumber"
-            }
-        }, number);
-
-        // CVV
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.MaskInput",
-                id: "*creditCardSecurityNumber"
-            }
-        }, cvv);
-
-        // Expiration date
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.DatePicker",
-                id: "*creditCardExpirationDate"
-            }
-        }, expiration);
-
-        // Click blank space to close date picker
-        await ui5.userInteraction.click({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.WizardStep",
-                id: "*creditCardStep"
-            }
-        });
-    }
-
-    // Step 4 Next button (after credit card)
-    async clickStep4Next() {
-        await ui5.userInteraction.click({
+        this.step4NextButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
                 metadata: "sap.m.Button",
                 id: "*creditCardStep-nextButton"
             }
-        });
-    }
+        };
 
-    // Fill delivery address
-    async fillDeliveryAddress(address, city, zip, country) {
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressAddress"
-            }
-        }, address);
-
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressCity"
-            }
-        }, city);
-
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressZip"
-            }
-        }, zip);
-
-        await ui5.userInteraction.clearAndFill({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressCountry"
-            }
-        }, country);
-
-        // Blur field by clicking outside
-        await nonUi5.userInteraction.click("body");
-    }
-
-    // Step 5 Next button (Review step)
-    async clickStep5Next() {
-        await ui5.userInteraction.click({
+        this.step5NextButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
                 metadata: "sap.m.Button",
                 id: "*invoiceStep-nextButton"
             }
-        });
-    }
+        };
 
-    // Order Summary step
-    async clickOrderSummaryNext() {
-        await ui5.userInteraction.click({
+        this.orderSummaryNextButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
                 metadata: "sap.m.Button",
                 id: "*deliveryTypeStep-nextButton"
             }
-        });
-    }
+        };
 
-    // Submit Order
-    async submitOrder() {
-        await ui5.userInteraction.click({
+        this.submitOrderButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
                 metadata: "sap.m.Button",
                 id: "*submitOrder"
             }
-        });
+        };
 
-        // Confirm selection
-        await ui5.userInteraction.click({
+        this.confirmYesButton = {
             elementProperties: {
                 metadata: "sap.m.Button",
                 text: "Yes"
             }
-        });
-        await browser.pause(3000);
-    }
+        };
 
-    // Verify success
-    async verifyOrderSuccess() {
-        await ui5.assertion.expectToBeVisible({
+        this.orderSuccessText = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.OrderCompleted",
                 metadata: "sap.m.FormattedText"
             }
-        });
-        await browser.pause(3000);
+        };
+
+        // Credit Card Inputs
+        this.cardHolderInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.Input",
+                id: "container-cart---checkoutView--creditCardHolderName"
+            }
+        };
+
+        this.cardNumberInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.MaskInput",
+                id: "*creditCardNumber"
+            }
+        };
+
+        this.cvvInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.MaskInput",
+                id: "*creditCardSecurityNumber"
+            }
+        };
+
+        this.expirationInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.DatePicker",
+                id: "*creditCardExpirationDate"
+            }
+        };
+
+        this.creditCardStepArea = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.WizardStep",
+                id: "*creditCardStep"
+            }
+        };
+
+        // Delivery Address Inputs
+        this.addressInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.Input",
+                id: "*invoiceAddressAddress"
+            }
+        };
+
+        this.cityInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.Input",
+                id: "*invoiceAddressCity"
+            }
+        };
+
+        this.zipInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.Input",
+                id: "*invoiceAddressZip"
+            }
+        };
+
+        this.countryInput = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Checkout",
+                metadata: "sap.m.Input",
+                id: "*invoiceAddressCountry"
+            }
+        };
+    }
+
+    // Step Buttons
+    async clickStep2Next() {
+        await ui5.userInteraction.click(this.step2NextButton);
+        await attachScreenshot('Step 2 Next Clicked');
+    }
+
+    async clickStep3Payment() {
+        await ui5.userInteraction.click(this.step3PaymentButton);
+        await attachScreenshot('Step 3 Payment Clicked');
+    }
+
+    async clickStep4Next() {
+        await ui5.userInteraction.click(this.step4NextButton);
+        await attachScreenshot('Step 4 Next Clicked');
+    }
+
+    async clickStep5Next() {
+        await ui5.userInteraction.click(this.step5NextButton);
+        await attachScreenshot('Step 5 Next Clicked');
+    }
+
+    async clickOrderSummaryNext() {
+        await ui5.userInteraction.click(this.orderSummaryNextButton);
+        await attachScreenshot('Order Summary Next Clicked');
+    }
+
+    async submitOrder() {
+        await ui5.userInteraction.click(this.submitOrderButton);
+        await attachScreenshot('Submit Order Clicked');
+        await ui5.userInteraction.click(this.confirmYesButton);
+        await attachScreenshot('Confirm Yes Clicked');
+    }
+
+    async verifyOrderSuccess() {
+        await ui5.assertion.expectToBeVisible(this.orderSuccessText);
+        await attachScreenshot('Order Success Screen');
+    }
+
+    // Credit Card Atomic Actions
+    async enterCardHolderName(name) {
+        await ui5.userInteraction.clearAndFill(this.cardHolderInput, name);
+        await attachScreenshot('Card Holder Entered');
+    }
+
+    async enterCardNumber(number) {
+        await ui5.userInteraction.clearAndFill(this.cardNumberInput, number);
+        await attachScreenshot('Card Number Entered');
+    }
+
+    async enterCVV(cvv) {
+        await ui5.userInteraction.clearAndFill(this.cvvInput, cvv);
+        await attachScreenshot('CVV Entered');
+    }
+
+    async enterExpirationDate(expiration) {
+        await ui5.userInteraction.clearAndFill(this.expirationInput, expiration);
+        await attachScreenshot('Expiration Date Entered');
+    }
+
+    async closeDatePicker() {
+        await ui5.userInteraction.click(this.creditCardStepArea);
+        await attachScreenshot('Date Picker Closed');
+    }
+
+    // Delivery Address Atomic Actions
+    async enterAddress(address) {
+        await ui5.userInteraction.clearAndFill(this.addressInput, address);
+        await attachScreenshot('Address Entered');
+    }
+
+    async enterCity(city) {
+        await ui5.userInteraction.clearAndFill(this.cityInput, city);
+        await attachScreenshot('City Entered');
+    }
+
+    async enterZip(zip) {
+        await ui5.userInteraction.clearAndFill(this.zipInput, zip);
+        await attachScreenshot('ZIP Entered');
+    }
+
+    async enterCountry(country) {
+        await ui5.userInteraction.clearAndFill(this.countryInput, country);
+        await attachScreenshot('Country Entered');
+    }
+
+    async blurField() {
+        await nonUi5.userInteraction.click("body");
+        await attachScreenshot('Field Blurred');
     }
 }
+
+export default new CheckoutPage();
