@@ -1,14 +1,15 @@
 // pageobjects/HomePage.js
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class HomePage {
 
-    //  Open Application 
+    // Open Application 
     async openApp() {
         await browser.url('https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon');
-
+        await attachScreenshot('Home Page Opened');
     }
 
-    //  Individual Actions 
+    // Individual Actions 
     async addFirstItem() {
         await ui5.userInteraction.click({
             elementProperties: {
@@ -17,6 +18,7 @@ class HomePage {
                 bindingContextPath: "/Promoted/0"
             }
         });
+        await attachScreenshot('First Item Added');
     }
 
     async selectCategoryLaptops() {
@@ -27,6 +29,7 @@ class HomePage {
                 bindingContextPath: "/ProductCategories*'LT')"
             }
         });
+        await attachScreenshot('Laptops Category Selected');
     }
 
     async selectCategoryMice() {
@@ -37,6 +40,7 @@ class HomePage {
                 bindingContextPath: "/ProductCategories*'MI')"
             }
         });
+        await attachScreenshot('Mice Category Selected');
     }
 
     async selectLaptop() {
@@ -47,6 +51,7 @@ class HomePage {
                 bindingContextPath: "/Products*'HT-1251')"
             }
         });
+        await attachScreenshot('Laptop Selected');
     }
 
     async selectMice() {
@@ -57,6 +62,7 @@ class HomePage {
                 bindingContextPath: "/Products*'HT-1068')"
             }
         });
+        await attachScreenshot('Mice Selected');
     }
 
     async addProducToCart() {
@@ -71,6 +77,7 @@ class HomePage {
                 ]
             }
         });
+        await attachScreenshot('Product Added to Cart');
     }
 
     async addProductMultipleTimes(count) {
@@ -86,6 +93,7 @@ class HomePage {
                 metadata: "sap.m.ToggleButton"
             }
         });
+        await attachScreenshot('Cart Opened from Welcome Page');
     }
 
     async openCartfromProduct() {
@@ -95,6 +103,7 @@ class HomePage {
                 metadata: "sap.m.ToggleButton"
             }
         });
+        await attachScreenshot('Cart Opened from Product Page');
     }
 
     // Combined flow: adds 1 laptop + 2 mice, then opens cart
@@ -102,15 +111,15 @@ class HomePage {
         await this.selectCategoryLaptops();
         await this.selectLaptop();
         await this.addProducToCart();
+        await attachScreenshot('Laptop Purchase Completed');
 
-        await this.openApp();
         await this.selectCategoryMice();
         await this.selectMice();
-
-        // Click Add to Cart twice for the same mice
         await this.addProductMultipleTimes(2);
+        await attachScreenshot('Mice Purchase Completed');
 
         await this.openCartfromProduct();
+        await attachScreenshot('Cart Opened after Purchase');
     }
 }
 

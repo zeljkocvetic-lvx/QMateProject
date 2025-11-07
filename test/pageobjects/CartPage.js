@@ -1,4 +1,6 @@
 // pageobjects/CartPage.js
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
+
 class CartPage {
     constructor() { }
 
@@ -10,6 +12,7 @@ class CartPage {
                 text: "Proceed"
             }
         });
+        await attachScreenshot('Proceeded to Checkout');
     }
 
     async laptopInCart() {
@@ -20,6 +23,7 @@ class CartPage {
                 bindingContextPath: "/cartEntries/HT-1251"
             }
         });
+        await attachScreenshot('Laptop in Cart Selected');
     }
 
     async miceInCart() {
@@ -30,6 +34,7 @@ class CartPage {
                 bindingContextPath: "/cartEntries/HT-1068"
             }
         });
+        await attachScreenshot('Mice in Cart Selected');
     }
 
     async verifyMiceQuantity(expectedQuantity) {
@@ -43,6 +48,8 @@ class CartPage {
         });
 
         expect(quantity).toEqual(expectedQuantity);
+        await attachScreenshot(`Mice Quantity Verified: ${expectedQuantity}`);
     }
 }
+
 export default new CartPage();

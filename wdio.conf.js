@@ -144,7 +144,7 @@ export const config = {
     reporters: [['allure', {
         outputDir: 'allure-results',
         disableWebdriverStepsReporting: true,
-        disableWebdriverScreenshotsReporting: true,
+        disableWebdriverScreenshotsReporting: false,
     }]],
 
     // Options to be passed to Mocha.
@@ -250,7 +250,8 @@ export const config = {
      */
     afterTest: async function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {
-            await browser.takeScreenshot();
+            const screenshot = await browser.takeScreenshot();
+            addAttachment('Error Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
         }
     },
 
