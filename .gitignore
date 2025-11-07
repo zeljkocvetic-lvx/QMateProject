@@ -4,6 +4,9 @@ node_modules/
 # Allure test results and reports
 allure-results/
 allure-report/
+node_modules/
+package-lock.json
+package.json
 
 # Logs
 logs/

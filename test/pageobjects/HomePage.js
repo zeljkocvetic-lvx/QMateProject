@@ -1,15 +1,12 @@
-// pageobjects/HomePage.js
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class HomePage {
 
-    // Open Application 
     async openApp() {
         await browser.url('https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon');
         await attachScreenshot('Home Page Opened');
     }
 
-    // Individual Actions 
     async addFirstItem() {
         await ui5.userInteraction.click({
             elementProperties: {
@@ -123,5 +120,4 @@ class HomePage {
     }
 }
 
-// Export instance
 export default new HomePage();

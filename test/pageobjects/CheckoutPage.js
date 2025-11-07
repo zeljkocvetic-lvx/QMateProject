@@ -1,9 +1,7 @@
-// pageobjects/CheckoutPage.js
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class CheckoutPage {
     constructor() {
-        // Step Buttons
         this.step2NextButton = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
@@ -66,7 +64,7 @@ class CheckoutPage {
             }
         };
 
-        // Credit Card Selectors
+        // Credit Card Inputs
         this.cardHolderInput = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
@@ -107,7 +105,7 @@ class CheckoutPage {
             }
         };
 
-        // Delivery Address Selectors
+        // Delivery Address Inputs
         this.addressInput = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Checkout",
@@ -141,7 +139,7 @@ class CheckoutPage {
         };
     }
 
-    // Step Button Methods
+    // Step Buttons
     async clickStep2Next() {
         await ui5.userInteraction.click(this.step2NextButton);
         await attachScreenshot('Step 2 Next Clicked');
@@ -205,15 +203,6 @@ class CheckoutPage {
         await attachScreenshot('Date Picker Closed');
     }
 
-    async fillCreditCardDetails(holderName, number, cvv, expiration) {
-        await this.enterCardHolderName(holderName);
-        await this.enterCardNumber(number);
-        await this.enterCVV(cvv);
-        await this.enterExpirationDate(expiration);
-        await this.closeDatePicker();
-        await attachScreenshot('Credit Card Details Filled');
-    }
-
     // Delivery Address Atomic Actions
     async enterAddress(address) {
         await ui5.userInteraction.clearAndFill(this.addressInput, address);
@@ -238,15 +227,6 @@ class CheckoutPage {
     async blurField() {
         await nonUi5.userInteraction.click("body");
         await attachScreenshot('Field Blurred');
-    }
-
-    async fillDeliveryAddress(address, city, zip, country) {
-        await this.enterAddress(address);
-        await this.enterCity(city);
-        await this.enterZip(zip);
-        await this.enterCountry(country);
-        await this.blurField();
-        await attachScreenshot('Delivery Address Filled');
     }
 }
 

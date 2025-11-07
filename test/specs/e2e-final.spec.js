@@ -13,10 +13,18 @@ describe('Home Page tests', () => {
         await CheckoutPage.clickStep2Next();
         await CheckoutPage.clickStep3Payment();
 
-        await CheckoutPage.fillCreditCardDetails("John Doe", "4111111111111111", "123", "12/2026");
+        await CheckoutPage.enterCardHolderName("John Doe");
+        await CheckoutPage.enterCardNumber("4111111111111111");
+        await CheckoutPage.enterCVV("123");
+        await CheckoutPage.enterExpirationDate("12/2026");
+        await CheckoutPage.closeDatePicker();
         await CheckoutPage.clickStep4Next();
 
-        await CheckoutPage.fillDeliveryAddress("Main St", "Anytown", "12345", "USA");
+        await CheckoutPage.enterAddress("Main St");
+        await CheckoutPage.enterCity("Anytown");
+        await CheckoutPage.enterZip("12345");
+        await CheckoutPage.enterCountry("USA");
+        await CheckoutPage.blurField();
         await CheckoutPage.clickStep5Next();
 
         await CheckoutPage.clickOrderSummaryNext();
