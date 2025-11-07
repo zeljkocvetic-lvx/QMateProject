@@ -6,8 +6,8 @@ describe('Home Page tests', () => {
     it('Full end-to-end checkout flow', async () => {
 
         await HomePage.openApp();
-        await HomePage.addFirstItem();
-        await HomePage.openCart();
+        await HomePage.addFirstPromotedItem();
+        await HomePage.openCartFromWelcome();
         await CartPage.proceedToCheckout();
 
         await CheckoutPage.clickStep2Next();
