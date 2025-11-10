@@ -28,15 +28,6 @@ class CartPage {
         await ui5.userInteraction.click(this.proceedButton);
     }
 
-    async clickProductByBindingPath(bindingContextPath) {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                ...this.productTextBase.elementProperties,
-                bindingContextPath
-            }
-        });
-    }
-
     async verifyProductQuantityByBindingPath(bindingContextPath, expectedQuantity) {
         const quantity = await ui5.control.getProperty({
             elementProperties: {
@@ -47,15 +38,6 @@ class CartPage {
         });
 
         await ui5.assertion.expect(quantity).toEqual(expectedQuantity);
-    }
-
-    async clickFirstProduct() {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                ...this.productTextBase.elementProperties
-            },
-            index: 0
-        });
     }
 }
 

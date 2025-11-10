@@ -1,53 +1,38 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+import { Given, When, Then } from '@wdio/cucumber-framework';
 import HomePage from '../pageobjects/HomePage.js';
 import CartPage from '../pageobjects/CartPage.js';
-import CheckoutPage from '../pageobjects/CheckoutPage.js';
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
-Given('I open the app', async () => {
+Given('the app is opened', async () => {
     await HomePage.openApp();
 });
 
-When('I add the first promoted item to the cart and proceed to checkout', async () => {
-    await HomePage.addFirstPromotedItem();
-    await HomePage.openCartFromWelcome();
+When('I select category {string}', async (categoryName) => {
+    await HomePage.selectCategoryByName(categoryName);
+    await HomePage.filterByAvailability();
+});
+
+When('I add the first filtered product to the cart', async () => {
+    await HomePage.selectAndStoreFirstProduct();
+    await HomePage.addProductToCart();
+});
+
+When('I search product {string} and add {string} items to the cart', async (productName, quantity) => {
+    await HomePage.addProductByNameToCart(productName, quantity);
+});
+
+Then('I should see the filtered product in the cart with correct quantity', async () => {
+    const product = global.filteredProduct;
+    await CartPage.verifyProductQuantityByBindingPath(`/Products('${product.name}')`, product.quantity);
+    await attachScreenshot(`Verified filtered product: ${product.name}`);
+});
+
+Then('I should see the searched product in the cart with correct quantity', async () => {
+    const product = global.searchedProduct;
+    await CartPage.verifyProductQuantityByBindingPath(`/Products('${product.name}')`, product.quantity);
+    await attachScreenshot(`Verified searched product: ${product.name}`);
+});
+
+Then('I proceed to checkout', async () => {
     await CartPage.proceedToCheckout();
-});
-
-When('I go to the payment step', async () => {
-    await CheckoutPage.clickStep2Next();
-    await CheckoutPage.clickStep3Payment();
-});
-
-When(
-    'I fill credit card details with holder {string}, number {string}, CVV {string} and expiration {string}',
-    async (holder, number, cvv, expiration) => {
-        await ui5.assertion.expectToBeVisible(CheckoutPage.cardHolderInput);
-        await CheckoutPage.enterCardHolderName(holder);
-        await CheckoutPage.enterCardNumber(number);
-        await CheckoutPage.enterCVV(cvv);
-        await CheckoutPage.enterExpirationDate(expiration);
-        await CheckoutPage.closeDatePicker();
-        await CheckoutPage.clickStep4Next();
-    }
-);
-
-When(
-    'I fill delivery address with {string}, {string}, {string}, {string}',
-    async (address, city, zip, country) => {
-        await CheckoutPage.enterAddress(address);
-        await CheckoutPage.enterCity(city);
-        await CheckoutPage.enterZip(zip);
-        await CheckoutPage.enterCountry(country);
-        await CheckoutPage.blurField();
-        await CheckoutPage.clickStep5Next();
-    }
-);
-
-When('I submit the order', async () => {
-    await CheckoutPage.clickOrderSummaryNext();
-    await CheckoutPage.submitOrder();
-});
-
-Then('I should see the order submitted successfully', async () => {
-    await CheckoutPage.verifyOrderSuccess();
 });

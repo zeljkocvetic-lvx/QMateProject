@@ -2,6 +2,31 @@ import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class HomePage {
 
+    constructor() {
+        this.PRODUCT_ITEM_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.ObjectListItem"
+            }
+        };
+
+        this.FILTER_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*masterListFilterButton"
+            }
+        };
+
+        this.OK_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*categoryFilterDialog-acceptbutton"
+            }
+        };
+    }
+
     async openApp() {
         await browser.url(
             'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
@@ -9,36 +34,51 @@ class HomePage {
         await attachScreenshot('Home Page Opened');
     }
 
-    async addFirstPromotedItem() {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Welcome",
-                metadata: "sap.m.Button",
-                bindingContextPath: "/Promoted/0"
-            }
-        });
-        await attachScreenshot('First Promoted Item Added');
-    }
-
-    async selectCategory(categoryCode) {
-        await ui5.userInteraction.click({
+    async selectCategoryByName(categoryName) {
+        const categorySelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
                 metadata: "sap.m.StandardListItem",
-                bindingContextPath: `/ProductCategories*'${categoryCode}')`
+                title: categoryName
             }
-        });
-        await attachScreenshot(`Category ${categoryCode} Selected`);
+        };
+        await ui5.userInteraction.click(categorySelector);
+        await attachScreenshot(`Category "${categoryName}" Selected`);
+    }
+
+    // ===== FILTER BY AVAILABILITY =====
+    async filterByAvailability() {
+        // Click the Filter button
+        await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
+
+        // Click "Availability" in the filter list
+        const filterItemSelector = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: "Availability"
+            }
+        };
+        await ui5.userInteraction.click(filterItemSelector);
+
+        // Click the "Available" option under Availability
+        const filterOptionSelector = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: "Available"
+            }
+        };
+        await ui5.userInteraction.click(filterOptionSelector);
+
+        // Click OK to apply the filter
+        await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
+
+        await attachScreenshot('Products filtered by availability');
     }
 
     async selectFirstProductInCategory() {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Category",
-                metadata: "sap.m.ObjectListItem"
-            },
-            index: 0
-        });
+        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
         await attachScreenshot('First Product in Category Selected');
     }
 
@@ -47,28 +87,10 @@ class HomePage {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Product",
                 metadata: "sap.m.Button",
-                text: [
-                    { path: "i18n>addToCartShort" }
-                ]
+                text: [{ path: "i18n>addToCartShort" }]
             }
         });
         await attachScreenshot('Product Added to Cart');
-    }
-
-    async addProductMultipleTimes(count) {
-        for (let i = 0; i < count; i++) {
-            await this.addProductToCart();
-        }
-    }
-
-    async openCartFromWelcome() {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Welcome",
-                metadata: "sap.m.ToggleButton"
-            }
-        });
-        await attachScreenshot('Cart Opened from Welcome Page');
     }
 
     async openCartFromProductPage() {
@@ -79,6 +101,56 @@ class HomePage {
             }
         });
         await attachScreenshot('Cart Opened from Product Page');
+    }
+
+    async addProductByNameToCart(productName, quantity) {
+        const productSelector = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.ObjectListItem",
+                title: productName
+            }
+        };
+
+        for (let i = 0; i < parseInt(quantity); i++) {
+            await ui5.userInteraction.click(productSelector);
+        }
+
+        global.currentProduct = {
+            name: productName,
+            quantity: parseInt(quantity)
+        };
+
+        await attachScreenshot(`Added ${quantity}x ${productName} to cart`);
+    }
+
+
+    async selectAndStoreFirstProduct() {
+        await ui5.element.getDisplayed(this.PRODUCT_ITEM_SELECTOR);
+
+        const firstProductName = await ui5.element.getPropertyValue(
+            {
+                elementProperties: this.PRODUCT_ITEM_SELECTOR.elementProperties
+            },
+            'title',
+        );
+
+        const firstProductPrice = await ui5.element.getPropertyValue(
+            {
+                elementProperties: this.PRODUCT_ITEM_SELECTOR.elementProperties
+            },
+            'number',
+            0
+        );
+
+        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
+        await attachScreenshot(`First filtered product "${firstProductName}" selected`);
+
+        global.currentProduct = {
+            name: firstProductName,
+            price: firstProductPrice,
+            quantity: 1
+        };
     }
 }
 

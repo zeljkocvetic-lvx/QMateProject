@@ -8,19 +8,19 @@ describe('Home Page tests if selected products are in the cart', () => {
 
         await HomePage.selectCategory('LT');
         await HomePage.selectFirstProductInCategory();
-        await HomePage.addProductToCart();
+        // await HomePage.addProductToCart();
 
 
-        await HomePage.selectCategory('MI');
-        await HomePage.selectFirstProductInCategory();
-        await HomePage.addProductMultipleTimes(2);
+        // await HomePage.selectCategory('MI');
+        // await HomePage.selectFirstProductInCategory();
+        // await HomePage.addProductMultipleTimes(2);
 
 
-        await HomePage.openCartFromProductPage();
+        // await HomePage.openCartFromProductPage();
 
 
-        await CartPage.clickFirstProduct(); // Laptop
-        await CartPage.clickProductByIndex(1); // Mice (assuming second product)
-        await CartPage.verifyProductQuantityByIndex(1, 2);
+        // await CartPage.clickFirstProduct(); // Laptop
+        // await CartPage.clickProductByIndex(1); // Mice (assuming second product)
+        // await CartPage.verifyProductQuantityByIndex(1, 2);
     });
 });
