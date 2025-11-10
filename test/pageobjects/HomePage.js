@@ -25,6 +25,22 @@ class HomePage {
                 id: "*categoryFilterDialog-acceptbutton"
             }
         };
+
+        this.BACK_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*page-navButton"
+            }
+        };
+
+        this.SEARCH_FIELD_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.SearchField",
+                id: "*searchField"
+            }
+        };
     }
 
     async openApp() {
@@ -46,12 +62,9 @@ class HomePage {
         await attachScreenshot(`Category "${categoryName}" Selected`);
     }
 
-    // ===== FILTER BY AVAILABILITY =====
     async filterByAvailability() {
-        // Click the Filter button
         await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
 
-        // Click "Availability" in the filter list
         const filterItemSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -61,7 +74,6 @@ class HomePage {
         };
         await ui5.userInteraction.click(filterItemSelector);
 
-        // Click the "Available" option under Availability
         const filterOptionSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -71,86 +83,89 @@ class HomePage {
         };
         await ui5.userInteraction.click(filterOptionSelector);
 
-        // Click OK to apply the filter
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
-
         await attachScreenshot('Products filtered by availability');
     }
 
-    async selectFirstProductInCategory() {
+    async selectAndStoreFirstProduct() {
+        const productName = await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0);
+        const productPrice = await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0);
+
+        global.filteredProduct = {
+            name: productName,
+            price: parseFloat(productPrice),
+            quantity: 1
+        };
+
         await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
         await attachScreenshot('First Product in Category Selected');
     }
 
     async addProductToCart() {
-        await ui5.userInteraction.click({
+        const addButtonSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Product",
                 metadata: "sap.m.Button",
                 text: [{ path: "i18n>addToCartShort" }]
             }
-        });
+        };
+        await ui5.userInteraction.click(addButtonSelector);
         await attachScreenshot('Product Added to Cart');
     }
 
-    async openCartFromProductPage() {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Product",
-                metadata: "sap.m.ToggleButton"
-            }
-        });
-        await attachScreenshot('Cart Opened from Product Page');
+    async goBackToCategory() {
+        await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
+        await attachScreenshot('Back to Category Page');
     }
 
-    async addProductByNameToCart(productName, quantity) {
-        const productSelector = {
+    async searchProductAndAddToCart(productName, quantity) {
+        // 1. Enter search value
+        await ui5.userInteraction.setValue(this.SEARCH_FIELD_SELECTOR, productName);
+        await attachScreenshot(`Searched for "${productName}"`);
+
+        // 2. Click the product that appears
+        const searchedProductSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
                 metadata: "sap.m.ObjectListItem",
                 title: productName
             }
         };
+        await ui5.userInteraction.click(searchedProductSelector);
+        await attachScreenshot(`Selected product "${productName}"`);
 
-        for (let i = 0; i < parseInt(quantity); i++) {
-            await ui5.userInteraction.click(productSelector);
-        }
+        // 3. Set quantity
+        const quantitySelector = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Product",
+                metadata: "sap.m.Input",
+                id: "*quantityInput"
+            }
+        };
+        await ui5.userInteraction.setValue(quantitySelector, quantity);
 
-        global.currentProduct = {
+        // 4. Add to cart
+        const addButtonSelector = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Product",
+                metadata: "sap.m.Button",
+                text: [{ path: "i18n>addToCartShort" }]
+            }
+        };
+        await ui5.userInteraction.click(addButtonSelector);
+        await attachScreenshot(`Added ${quantity} of "${productName}" to cart`);
+
+        // 5. Store price and quantity for later verification
+        const productPrice = await ui5.element.getPropertyValue(
+            { elementProperties: { viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.Text", id: "*priceText" } },
+            'text'
+        );
+
+        browser.sharedStore.set('secondProduct', {
             name: productName,
-            quantity: parseInt(quantity)
-        };
-
-        await attachScreenshot(`Added ${quantity}x ${productName} to cart`);
-    }
-
-
-    async selectAndStoreFirstProduct() {
-        await ui5.element.getDisplayed(this.PRODUCT_ITEM_SELECTOR);
-
-        const firstProductName = await ui5.element.getPropertyValue(
-            {
-                elementProperties: this.PRODUCT_ITEM_SELECTOR.elementProperties
-            },
-            'title',
-        );
-
-        const firstProductPrice = await ui5.element.getPropertyValue(
-            {
-                elementProperties: this.PRODUCT_ITEM_SELECTOR.elementProperties
-            },
-            'number',
-            0
-        );
-
-        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
-        await attachScreenshot(`First filtered product "${firstProductName}" selected`);
-
-        global.currentProduct = {
-            name: firstProductName,
-            price: firstProductPrice,
-            quantity: 1
-        };
+            price: parseFloat(productPrice.replace('$', '')),
+            quantity
+        });
     }
 }
 
