@@ -125,15 +125,25 @@ class HomePage {
         await ui5.userInteraction.fill(this.SEARCH_FIELD_SELECTOR, productName);
         await attachScreenshot(`Searched for "${productName}"`);
 
-        const searchedProductSelector = {
+        const searchResultSelector = {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Category",
+                viewName: "sap.ui.demo.cart.view.Home",
                 metadata: "sap.m.ObjectListItem",
-                title: productName
+                id: "*-0"
             }
         };
-        await ui5.userInteraction.click(searchedProductSelector);
-        await attachScreenshot(`Selected product "${productName}"`);
+
+        const searchedProductName = await ui5.element.getPropertyValue(searchResultSelector, 'title', 0);
+        const productPrice = await ui5.element.getPropertyValue(searchResultSelector, 'number', 0);
+
+        global.searchedProduct = {
+            name: searchedProductName,
+            price: parseFloat(productPrice),
+            quantity: 1
+        };
+
+        await ui5.userInteraction.click(searchResultSelector, 0);
+        await attachScreenshot(`Selected product "${searchedProductName}"`);
 
         const addButtonSelector = {
             elementProperties: {
@@ -143,7 +153,7 @@ class HomePage {
             }
         };
         await ui5.userInteraction.click(addButtonSelector);
-        await attachScreenshot(`Added "${productName}" to cart`);
+        await attachScreenshot(`Added "${searchedProductName}" to cart`);
     }
 }
 
