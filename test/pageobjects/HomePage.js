@@ -41,14 +41,6 @@ class HomePage {
                 id: "*searchField"
             }
         };
-
-        this.CATEGORY_SELECTOR_BUTTON = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Welcome",
-                metadata: "sap.m.Button",
-                icon: "sap-icon://menu2"
-            }
-        };
     }
 
     async openApp() {
@@ -121,29 +113,22 @@ class HomePage {
         await attachScreenshot('Back to Category Page');
     }
 
-    async searchProductAndAddToCart(productName) {
+    async searchProductAndAddToCart(productName, quantity = 1) {
         await ui5.userInteraction.fill(this.SEARCH_FIELD_SELECTOR, productName);
         await attachScreenshot(`Searched for "${productName}"`);
 
-        const searchResultSelector = {
+        const searchedProductSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
-                metadata: "sap.m.ObjectListItem",
-                id: "*-0"
+                metadata: "sap.m.ObjectListItem"
             }
         };
 
-        const searchedProductName = await ui5.element.getPropertyValue(searchResultSelector, 'title', 0);
-        const productPrice = await ui5.element.getPropertyValue(searchResultSelector, 'number', 0);
+        const firstProductName = await ui5.element.getPropertyValue(searchedProductSelector, 'title', 0);
+        global.filteredProduct = { name: firstProductName, price: 0, quantity };
 
-        global.searchedProduct = {
-            name: searchedProductName,
-            price: parseFloat(productPrice),
-            quantity: 1
-        };
-
-        await ui5.userInteraction.click(searchResultSelector, 0);
-        await attachScreenshot(`Selected product "${searchedProductName}"`);
+        await ui5.userInteraction.click(searchedProductSelector, 0);
+        await attachScreenshot(`Selected product "${firstProductName}"`);
 
         const addButtonSelector = {
             elementProperties: {
@@ -152,8 +137,12 @@ class HomePage {
                 text: [{ path: "i18n>addToCartShort" }]
             }
         };
-        await ui5.userInteraction.click(addButtonSelector);
-        await attachScreenshot(`Added "${searchedProductName}" to cart`);
+
+        for (let i = 0; i < quantity; i++) {
+            await ui5.userInteraction.click(addButtonSelector);
+        }
+
+        await attachScreenshot(`Added "${firstProductName}" to cart ${quantity} times`);
     }
 }
 

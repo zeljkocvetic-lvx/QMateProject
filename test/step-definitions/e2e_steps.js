@@ -24,28 +24,30 @@ When('I navigate back to the category page', async () => {
 });
 
 When('I search product {string} and add {string} items to the cart', async (productName, quantity) => {
-    await HomePage.searchProductAndAddToCart(productName, quantity);
+    await HomePage.searchProductAndAddToCart(productName, parseInt(quantity));
 });
 
 Then('the cart should contain exactly 2 products with correct name, quantity and price', async () => {
     const cartItems = await CheckoutPage.getCartItems();
-
     if (cartItems.length !== 2) {
         throw new Error(`Expected 2 products in cart, but found ${cartItems.length}`);
     }
 
     const firstProduct = global.filteredProduct;
-    const secondProduct = await browser.sharedStore.get('secondProduct');
+    const secondProduct = global.searchedProduct;
 
     const firstItem = cartItems.find(item => item.name === firstProduct.name);
     const secondItem = cartItems.find(item => item.name === secondProduct.name);
 
     if (!firstItem) throw new Error(`First filtered product "${firstProduct.name}" not found in cart`);
-    if (firstItem.quantity !== firstProduct.quantity) throw new Error(`Quantity mismatch for first product: expected ${firstProduct.quantity}, found ${firstItem.quantity}`);
-    if (firstItem.price !== firstProduct.price) throw new Error(`Price mismatch for first product: expected ${firstProduct.price}, found ${firstItem.price}`);
+    if (firstItem.quantity !== firstProduct.quantity)
+        throw new Error(`Quantity mismatch for first product: expected ${firstProduct.quantity}, found ${firstItem.quantity}`);
+    if (firstItem.price !== firstProduct.price)
+        throw new Error(`Price mismatch for first product: expected ${firstProduct.price}, found ${firstItem.price}`);
 
     if (!secondItem) throw new Error(`Second searched product "${secondProduct.name}" not found in cart`);
-    if (secondItem.quantity !== parseInt(secondProduct.quantity)) throw new Error(`Quantity mismatch for second product: expected ${secondProduct.quantity}, found ${secondItem.quantity}`);
+    if (secondItem.quantity !== secondProduct.quantity)
+        throw new Error(`Quantity mismatch for second product: expected ${secondProduct.quantity}, found ${secondItem.quantity}`);
 });
 
 When('I proceed to checkout', async () => {
