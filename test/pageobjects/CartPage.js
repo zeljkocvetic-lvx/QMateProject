@@ -1,3 +1,4 @@
+// file: pageobjects/CartPage.js
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class CartPage {
@@ -10,50 +11,53 @@ class CartPage {
             }
         };
 
-        this.CHECKOUT_BUTTON_SELECTOR = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Cart",
-                metadata: "sap.m.Button",
-                text: [{ path: "i18n>checkout" }]
-            }
-        };
-    }
-
-    async openCart() {
-        const cartButton = {
+        this.CART_BUTTON_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
                 metadata: "sap.m.ToggleButton"
             }
         };
-        await ui5.userInteraction.click(cartButton);
+    }
+
+    async openCart() {
+        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
         await attachScreenshot('Cart Opened');
     }
 
-    async validateCartProducts() {
-        const first = await browser.sharedStore.get('firstProduct');
-        const second = await browser.sharedStore.get('secondProduct');
+    async getCartItems() {
+        const elements = await ui5.element.getAllDisplayed(this.CART_ITEM_SELECTOR);
 
-        const cartItems = await ui5.userInteraction.getAllProperties(this.CART_ITEM_SELECTOR, ['title', 'number']);
-        if (cartItems.length !== 2) {
-            throw new Error(`Expected 2 products in cart, found ${cartItems.length}`);
+        if (elements.length === 0) {
+            throw new Error('No products displayed in cart');
         }
 
-        const checkItem = (product) => {
-            const match = cartItems.find(item => item.title === product.name);
-            if (!match) throw new Error(`Product "${product.name}" not found in cart`);
-            if (match.number != product.quantity) throw new Error(`Product "${product.name}" quantity mismatch: expected ${product.quantity}, got ${match.number}`);
-        };
+        const items = [];
+        for (let i = 0; i < elements.length; i++) {
+            const name = await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'title', i);
+            const quantity = parseInt(await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'intro', i));
+            const price = parseFloat(await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'number', i));
 
-        checkItem(first);
-        checkItem(second);
+            items.push({ name, quantity, price });
+        }
 
-        await attachScreenshot('Cart Validation Completed');
+        return items;
     }
 
-    async proceedToCheckout() {
-        await ui5.userInteraction.click(this.CHECKOUT_BUTTON_SELECTOR);
-        await attachScreenshot('Checkout Clicked');
+    async validateCartProducts(expectedProducts) {
+        const cartItems = await this.getCartItems();
+
+        if (cartItems.length !== expectedProducts.length) {
+            throw new Error(`Expected ${expectedProducts.length} products in cart, found ${cartItems.length}`);
+        }
+
+        expectedProducts.forEach(product => {
+            const item = cartItems.find(i => i.name === product.name);
+            if (!item) throw new Error(`Product "${product.name}" not found in cart`);
+            if (item.quantity !== product.quantity) throw new Error(`Quantity mismatch for "${product.name}": expected ${product.quantity}, got ${item.quantity}`);
+            if (item.price !== product.price) throw new Error(`Price mismatch for "${product.name}": expected ${product.price}, got ${item.price}`);
+        });
+
+        await attachScreenshot('Cart Validation Completed');
     }
 }
 
