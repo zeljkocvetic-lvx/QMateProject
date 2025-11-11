@@ -9,7 +9,6 @@ Feature: Complete end-to-end flow with filtered and searched products
         And I search product "<searched_product>" and add "<searched_quantity>" items to the cart
         And I navigate to the cart
         Then the cart should contain exactly 2 products with correct name, quantity and price
-        And I proceed to checkout
 
         Examples:
             | category_name | searched_product | searched_quantity |

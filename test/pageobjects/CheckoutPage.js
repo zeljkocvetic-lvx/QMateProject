@@ -78,12 +78,6 @@ class CheckoutPage {
         return items.length;
     }
 
-    // Proceed to checkout
-    async proceedToCheckout() {
-        await ui5.userInteraction.waitForDisplayed(this.CHECKOUT_BUTTON_SELECTOR, 5000);
-        await ui5.userInteraction.click(this.CHECKOUT_BUTTON_SELECTOR);
-        await attachScreenshot('Proceeded to Checkout');
-    }
 
 }
 

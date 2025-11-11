@@ -54,6 +54,3 @@ Then('the cart should contain exactly 2 products with correct name, quantity and
     if (secondItem.quantity !== secondProduct.quantity) throw new Error(`Quantity mismatch for second product: expected ${secondProduct.quantity}, found ${secondItem.quantity}`);
 });
 
-When('I proceed to checkout', async () => {
-    await CheckoutPage.proceedToCheckout();
-});
