@@ -1,212 +1,49 @@
+// file: pageobjects/CheckoutPage.js
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
+
 class CheckoutPage {
+
     constructor() {
-        this.step2NextButton = {
+        this.CART_ITEM_SELECTOR = {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
+                viewName: "sap.ui.demo.cart.view.Cart",
+                metadata: "sap.m.ObjectListItem"
+            }
+        };
+
+        this.CHECKOUT_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Cart",
                 metadata: "sap.m.Button",
-                id: "*contentsStep-nextButton"
-            }
-        };
-
-        this.step3PaymentButton = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Button",
-                id: "container-cart---checkoutView--paymentTypeStep-nextButton"
-            }
-        };
-
-        this.step4NextButton = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Button",
-                id: "*creditCardStep-nextButton"
-            }
-        };
-
-        this.step5NextButton = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Button",
-                id: "*invoiceStep-nextButton"
-            }
-        };
-
-        this.orderSummaryNextButton = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Button",
-                id: "*deliveryTypeStep-nextButton"
-            }
-        };
-
-        this.submitOrderButton = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Button",
-                id: "*submitOrder"
-            }
-        };
-
-        this.confirmYesButton = {
-            elementProperties: {
-                metadata: "sap.m.Button",
-                text: "Yes"
-            }
-        };
-
-        this.orderSuccessText = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.OrderCompleted",
-                metadata: "sap.m.FormattedText"
-            }
-        };
-
-        // Credit Card Inputs
-        this.cardHolderInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "container-cart---checkoutView--creditCardHolderName"
-            }
-        };
-
-        this.cardNumberInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.MaskInput",
-                id: "*creditCardNumber"
-            }
-        };
-
-        this.cvvInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.MaskInput",
-                id: "*creditCardSecurityNumber"
-            }
-        };
-
-        this.expirationInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.DatePicker",
-                id: "*creditCardExpirationDate"
-            }
-        };
-
-        this.creditCardStepArea = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.WizardStep",
-                id: "*creditCardStep"
-            }
-        };
-
-        // Delivery Address Inputs
-        this.addressInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressAddress"
-            }
-        };
-
-        this.cityInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressCity"
-            }
-        };
-
-        this.zipInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressZip"
-            }
-        };
-
-        this.countryInput = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Checkout",
-                metadata: "sap.m.Input",
-                id: "*invoiceAddressCountry"
+                text: [{ path: "i18n>checkout" }]
             }
         };
     }
 
-    // Step Button Methods
-    async clickStep2Next() {
-        await ui5.userInteraction.click(this.step2NextButton);
+    async waitForPageLoaded() {
+        await ui5.userInteraction.waitForDisplayed(this.CART_ITEM_SELECTOR, 5000);
+        await attachScreenshot('Checkout Page Loaded');
     }
 
-    async clickStep3Payment() {
-        await ui5.userInteraction.click(this.step3PaymentButton);
+    async getCartItems() {
+        const elements = await ui5.element.getDisplayed(this.CART_ITEM_SELECTOR);
+        const items = [];
+
+        for (let i = 0; i < elements.length; i++) {
+            const name = await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'title', i);
+            const quantity = parseInt(await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'number', i));
+            const priceText = await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'number', i); // adjust if price is in different property
+            const price = parseFloat(priceText);
+
+            items.push({ name, quantity, price });
+        }
+
+        return items;
     }
 
-    async clickStep4Next() {
-        await ui5.userInteraction.click(this.step4NextButton);
-    }
-
-    async clickStep5Next() {
-        await ui5.userInteraction.click(this.step5NextButton);
-    }
-
-    async clickOrderSummaryNext() {
-        await ui5.userInteraction.click(this.orderSummaryNextButton);
-    }
-
-    async submitOrder() {
-        await ui5.userInteraction.click(this.submitOrderButton);
-        await ui5.userInteraction.click(this.confirmYesButton);
-    }
-
-    async verifyOrderSuccess() {
-        await ui5.assertion.expectToBeVisible(this.orderSuccessText);
-    }
-
-    // Credit Card Atomic Actions
-    async enterCardHolderName(name) {
-        await ui5.userInteraction.clearAndFill(this.cardHolderInput, name);
-    }
-
-    async enterCardNumber(number) {
-        await ui5.userInteraction.clearAndFill(this.cardNumberInput, number);
-    }
-
-    async enterCVV(cvv) {
-        await ui5.userInteraction.clearAndFill(this.cvvInput, cvv);
-    }
-
-    async enterExpirationDate(expiration) {
-        await ui5.userInteraction.clearAndFill(this.expirationInput, expiration);
-    }
-
-    async closeDatePicker() {
-        await ui5.userInteraction.click(this.creditCardStepArea);
-    }
-
-    // Delivery Address Atomic Actions
-    async enterAddress(address) {
-        await ui5.userInteraction.clearAndFill(this.addressInput, address);
-    }
-
-    async enterCity(city) {
-        await ui5.userInteraction.clearAndFill(this.cityInput, city);
-    }
-
-    async enterZip(zip) {
-        await ui5.userInteraction.clearAndFill(this.zipInput, zip);
-    }
-
-    async enterCountry(country) {
-        await ui5.userInteraction.clearAndFill(this.countryInput, country);
-    }
-
-    async blurField() {
-        await nonUi5.userInteraction.click("body");
+    async proceedToCheckout() {
+        await ui5.userInteraction.click(this.CHECKOUT_BUTTON_SELECTOR);
+        await attachScreenshot('Proceeded to Checkout');
     }
 }
 

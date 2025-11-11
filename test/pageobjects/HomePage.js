@@ -1,3 +1,4 @@
+// file: pageobjects/HomePage.js
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class HomePage {
@@ -41,6 +42,16 @@ class HomePage {
                 id: "*searchField"
             }
         };
+
+        this.CART_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Product",
+                metadata: "sap.m.ToggleButton",
+                tooltip: [
+                    { model: "i18n", path: "toCartButtonTooltip", value: "Show Shopping Cart", type: "string" }
+                ]
+            }
+        };
     }
 
     async openApp() {
@@ -64,6 +75,7 @@ class HomePage {
 
     async filterByAvailability() {
         await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
+
         const filterItemSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -72,6 +84,7 @@ class HomePage {
             }
         };
         await ui5.userInteraction.click(filterItemSelector);
+
         const filterOptionSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -80,6 +93,7 @@ class HomePage {
             }
         };
         await ui5.userInteraction.click(filterOptionSelector);
+
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
         await attachScreenshot('Products filtered by availability');
     }
@@ -96,7 +110,7 @@ class HomePage {
         await attachScreenshot('First Product in Category Selected');
     }
 
-    async addProductToCart() {
+    async addProductToCart(times = 1) {
         const addButtonSelector = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Product",
@@ -104,8 +118,12 @@ class HomePage {
                 text: [{ path: "i18n>addToCartShort" }]
             }
         };
-        await ui5.userInteraction.click(addButtonSelector);
-        await attachScreenshot('Product Added to Cart');
+
+        for (let i = 0; i < times; i++) {
+            await ui5.userInteraction.click(addButtonSelector);
+        }
+
+        await attachScreenshot(`Product added to cart ${times} time(s)`);
     }
 
     async goBackToCategory() {
@@ -125,24 +143,25 @@ class HomePage {
         };
 
         const firstProductName = await ui5.element.getPropertyValue(searchedProductSelector, 'title', 0);
-        global.filteredProduct = { name: firstProductName, price: 0, quantity };
+        const firstProductPrice = await ui5.element.getPropertyValue(searchedProductSelector, 'number', 0);
+
+        // Store globally to validate later in checkout
+        global.secondProduct = {
+            name: firstProductName,
+            price: parseFloat(firstProductPrice),
+            quantity
+        };
 
         await ui5.userInteraction.click(searchedProductSelector, 0);
         await attachScreenshot(`Selected product "${firstProductName}"`);
 
-        const addButtonSelector = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Product",
-                metadata: "sap.m.Button",
-                text: [{ path: "i18n>addToCartShort" }]
-            }
-        };
+        // Add to cart
+        await this.addProductToCart(quantity);
+    }
 
-        for (let i = 0; i < quantity; i++) {
-            await ui5.userInteraction.click(addButtonSelector);
-        }
-
-        await attachScreenshot(`Added "${firstProductName}" to cart ${quantity} times`);
+    async goToCart() {
+        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
+        await attachScreenshot('Navigated to Cart');
     }
 }
 
