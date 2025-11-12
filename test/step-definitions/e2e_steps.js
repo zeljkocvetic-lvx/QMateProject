@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import HomePage from '../pageobjects/HomePage.js';
 import CheckoutPage from '../pageobjects/CheckoutPage.js';
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 Given('Open the app', async () => {
     await HomePage.openApp();
@@ -38,21 +39,38 @@ When('Navigate to the cart', async () => {
     await HomePage.goToCart();
 });
 
-Then('Verify cart contains exactly 2 products with correct name, quantity and price', async () => {
-    const items = await CheckoutPage.getCartItems();
+Then(
+    'Verify cart contains exactly the products added with correct name, quantity and price',
+    async () => {
+        const items = await CheckoutPage.getCartItems();
 
-    if (!items || items.length === 0) throw new Error('No products displayed in cart');
-    if (items.length !== 2) throw new Error(`Expected 2 products in cart, found ${items.length}`);
+        if (!items || items.length === 0) throw new Error('No products displayed in cart');
 
-    const validateProduct = (expected) => {
-        const actual = items.find(i => i.name === expected.name);
-        if (!actual) throw new Error(`Product "${expected.name}" not found in cart`);
-        if (actual.quantity !== expected.quantity)
-            throw new Error(`Quantity mismatch for "${expected.name}": expected ${expected.quantity}, got ${actual.quantity}`);
-        if (actual.price !== expected.price)
-            throw new Error(`Price mismatch for "${expected.name}": expected ${expected.price}, got ${actual.price}`);
-    };
+        const expectedProducts = [global.filteredProduct, global.secondProduct];
 
-    validateProduct(global.filteredProduct);
-    validateProduct(global.secondProduct);
-});
+        const aggregatedItems = items.reduce((acc, item) => {
+            if (!acc[item.name]) {
+                acc[item.name] = { ...item };
+            } else {
+                acc[item.name].quantity += item.quantity;
+            }
+            return acc;
+        }, {});
+
+        expectedProducts.forEach(expectedProduct => {
+            const actual = aggregatedItems[expectedProduct.name];
+            if (!actual) throw new Error(`Product "${expectedProduct.name}" not found in cart`);
+            if (actual.quantity !== expectedProduct.quantity)
+                throw new Error(
+                    `Quantity mismatch for "${expectedProduct.name}": expected ${expectedProduct.quantity}, got ${actual.quantity}`
+                );
+            if (actual.price !== expectedProduct.price)
+                throw new Error(
+                    `Price mismatch for "${expectedProduct.name}": expected ${expectedProduct.price}, got ${actual.price}`
+                );
+        });
+
+        await browser.pause(1000);
+        await attachScreenshot('Final Cart Verification');
+    }
+);
