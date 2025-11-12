@@ -1,5 +1,4 @@
 class CheckoutPage {
-
     constructor() {
         this.CART_ENTRY_SELECTOR = {
             elementProperties: { viewName: "sap.ui.demo.cart.view.Cart", metadata: "sap.m.ObjectListItem", bindingContextPath: "/cartEntries/*" }
@@ -7,6 +6,7 @@ class CheckoutPage {
     }
 
     async getCartItems() {
+        await ui5.assertion.expectToBeVisible(this.CART_ENTRY_SELECTOR);
         const elements = await ui5.element.getAllDisplayed(this.CART_ENTRY_SELECTOR);
         if (!elements.length) throw new Error('No products displayed in cart');
         const items = [];

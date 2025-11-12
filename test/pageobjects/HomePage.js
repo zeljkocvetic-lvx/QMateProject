@@ -25,6 +25,7 @@ class HomePage {
 
     async openApp() {
         await browser.url('https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon');
+        await ui5.assertion.expectToBeVisible(this.SEARCH_FIELD_SELECTOR);
         await attachScreenshot('Home Page Opened');
     }
 
@@ -32,6 +33,7 @@ class HomePage {
         const categorySelector = {
             elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.StandardListItem", title: categoryName }
         };
+        await ui5.assertion.expectToBeVisible(categorySelector);
         await ui5.userInteraction.click(categorySelector);
         await attachScreenshot(`Category "${categoryName}" Selected`);
     }
@@ -43,7 +45,7 @@ class HomePage {
         const availableSelector = { elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.StandardListItem", title: "Available" } };
         await ui5.userInteraction.click(availableSelector);
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
-        await attachScreenshot('Products filtered by availability');
+        await attachScreenshot('Products Filtered by Availability');
     }
 
     async selectAndStoreFirstProduct() {
@@ -51,29 +53,30 @@ class HomePage {
         const price = parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0));
         global.filteredProduct = { name, price, quantity: 1 };
         await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
-        await attachScreenshot('First Product in Category Selected');
+        await attachScreenshot('First Product Selected');
     }
 
     async addProductToCart(times = 1) {
         const addButton = { elementProperties: { viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.Button", text: [{ path: "i18n>addToCartShort" }] } };
-        for (let i = 0; i < times; i++) await ui5.userInteraction.click(addButton);
-        await attachScreenshot(`Product added to cart ${times} time(s)`);
+        for (let i = 0; i < times; i++) {
+            await ui5.userInteraction.click(addButton);
+        }
     }
 
     async goBackToCategory() {
         await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
-        await attachScreenshot('Back to Category Page');
+        await attachScreenshot('Returned to Category Page');
     }
 
     async searchProductAndAddToCart(name, quantity = 1) {
         await ui5.userInteraction.fill(this.SEARCH_FIELD_SELECTOR, name);
-        await attachScreenshot(`Searched for "${name}"`);
+        await ui5.assertion.expectToBeVisible({ elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" } });
         const productSelector = { elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" } };
         const productName = await ui5.element.getPropertyValue(productSelector, 'title', 0);
         const productPrice = parseFloat(await ui5.element.getPropertyValue(productSelector, 'number', 0));
         global.secondProduct = { name: productName, price: productPrice, quantity };
         await ui5.userInteraction.click(productSelector, 0);
-        await attachScreenshot(`Selected product "${productName}"`);
+        await attachScreenshot(`Searched and Selected Product "${productName}"`);
         await this.addProductToCart(quantity);
     }
 

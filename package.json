@@ -16,6 +16,7 @@
   "scripts": {
     "wdio": "wdio run ./wdio.conf.js",
     "report:generate": "allure generate --clean allure-results",
-    "report:open": "allure open"
+    "report:open": "allure open",
+    "test:ui5": "rm -rf allure-results && wdio run wdio.conf.js"
   }
 }
