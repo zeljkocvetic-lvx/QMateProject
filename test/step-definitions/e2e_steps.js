@@ -16,9 +16,9 @@ When('Filter products by availability', async () => {
 
 When('Add first filtered product to cart', async () => {
     const product = await HomePage.getFirstProductDetails();
-    global.filteredProduct = product;
     await HomePage.selectFirstProduct();
     await HomePage.addProductToCart();
+    global.filteredProduct = { ...product, quantity: 1 };
 });
 
 When('Navigate back to the category page', async () => {
@@ -26,8 +26,12 @@ When('Navigate back to the category page', async () => {
 });
 
 When('Search product {string} and add {string} items to cart', async (name, qty) => {
-    const product = await HomePage.searchProductAndAddToCart(name, parseInt(qty));
-    global.secondProduct = product;
+    const quantity = parseInt(qty);
+    await HomePage.searchProduct(name);
+    const product = await HomePage.selectSearchedProduct();
+    await HomePage.addProductToCart(quantity);
+
+    global.secondProduct = { ...product, quantity };
 });
 
 When('Navigate to the cart', async () => {
@@ -37,15 +41,8 @@ When('Navigate to the cart', async () => {
 Then('Verify cart contains exactly 2 products with correct name, quantity and price', async () => {
     const items = await CheckoutPage.getCartItems();
 
-    if (!items || items.length === 0) {
-        throw new Error('No products displayed in cart');
-    }
-
-    if (items.length !== 2) {
-        throw new Error(`Expected 2 products in cart, found ${items.length}`);
-    }
-
-    const [first, second] = [global.filteredProduct, global.secondProduct];
+    if (!items || items.length === 0) throw new Error('No products displayed in cart');
+    if (items.length !== 2) throw new Error(`Expected 2 products in cart, found ${items.length}`);
 
     const validateProduct = (expected) => {
         const actual = items.find(i => i.name === expected.name);
@@ -56,6 +53,6 @@ Then('Verify cart contains exactly 2 products with correct name, quantity and pr
             throw new Error(`Price mismatch for "${expected.name}": expected ${expected.price}, got ${actual.price}`);
     };
 
-    validateProduct(first);
-    validateProduct(second);
+    validateProduct(global.filteredProduct);
+    validateProduct(global.secondProduct);
 });

@@ -80,6 +80,7 @@ class HomePage {
         for (let i = 0; i < times; i++) {
             await ui5.userInteraction.click(addButton);
         }
+        await attachScreenshot(`${times}x Product Added to Cart`);
     }
 
     async goBackToCategory() {
@@ -87,16 +88,24 @@ class HomePage {
         await attachScreenshot('Returned to Category Page');
     }
 
-    async searchProductAndAddToCart(name, quantity = 1) {
+    async searchProduct(name) {
         await ui5.userInteraction.fill(this.SEARCH_FIELD_SELECTOR, name);
-        await ui5.assertion.expectToBeVisible({ elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" } });
+        await browser.keys('Enter');
+        await browser.pause(1500);
+        await attachScreenshot(`Searched for Product: "${name}"`);
+    }
+
+    async selectSearchedProduct() {
         const productSelector = { elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" } };
+        await ui5.assertion.expectToBeVisible(productSelector);
+
         const productName = await ui5.element.getPropertyValue(productSelector, 'title', 0);
         const productPrice = parseFloat(await ui5.element.getPropertyValue(productSelector, 'number', 0));
+
         await ui5.userInteraction.click(productSelector, 0);
-        await attachScreenshot(`Searched and Selected Product "${productName}"`);
-        await this.addProductToCart(quantity);
-        return { name: productName, price: productPrice, quantity };
+        await attachScreenshot(`Selected Searched Product: "${productName}"`);
+
+        return { name: productName, price: productPrice };
     }
 
     async goToCart() {
