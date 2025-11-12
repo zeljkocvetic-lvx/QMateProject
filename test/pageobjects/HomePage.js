@@ -19,7 +19,18 @@ class HomePage {
             elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.SearchField", id: "*searchField" }
         };
         this.CART_BUTTON_SELECTOR = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.ToggleButton", tooltip: [{ model: "i18n", path: "toCartButtonTooltip", value: "Show Shopping Cart", type: "string" }] }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Product",
+                metadata: "sap.m.ToggleButton",
+                tooltip: [
+                    {
+                        model: "i18n",
+                        path: "toCartButtonTooltip",
+                        value: "Show Shopping Cart",
+                        type: "string"
+                    }
+                ]
+            }
         };
     }
 
@@ -31,20 +42,53 @@ class HomePage {
 
     async selectCategoryByName(categoryName) {
         const categorySelector = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.StandardListItem", title: categoryName }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.StandardListItem",
+                title: categoryName
+            }
         };
         await ui5.assertion.expectToBeVisible(categorySelector);
         await ui5.userInteraction.click(categorySelector);
         await attachScreenshot(`Category "${categoryName}" Selected`);
     }
 
-    async filterByAvailability() {
+
+    async openFilterDialog() {
         await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
-        const availabilitySelector = { elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.StandardListItem", title: "Availability" } };
-        await ui5.userInteraction.click(availabilitySelector);
-        const availableSelector = { elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.StandardListItem", title: "Available" } };
-        await ui5.userInteraction.click(availableSelector);
+    }
+
+    async selectFilterCriterion(criterionName) {
+        const criterionSelector = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: criterionName
+            }
+        };
+        await ui5.userInteraction.click(criterionSelector);
+    }
+
+    async selectFilterOption(optionName) {
+        const optionSelector = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: optionName
+            }
+        };
+        await ui5.userInteraction.click(optionSelector);
+    }
+
+    async confirmFilterSelection() {
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
+    }
+
+    async filterByAvailability() {
+        await this.openFilterDialog();
+        await this.selectFilterCriterion("Availability");
+        await this.selectFilterOption("Available");
+        await this.confirmFilterSelection();
         await attachScreenshot('Products Filtered by Availability');
     }
 
@@ -57,7 +101,13 @@ class HomePage {
     }
 
     async addProductToCart(times = 1) {
-        const addButton = { elementProperties: { viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.Button", text: [{ path: "i18n>addToCartShort" }] } };
+        const addButton = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Product",
+                metadata: "sap.m.Button",
+                text: [{ path: "i18n>addToCartShort" }]
+            }
+        };
         for (let i = 0; i < times; i++) {
             await ui5.userInteraction.click(addButton);
         }
@@ -70,8 +120,12 @@ class HomePage {
 
     async searchProductAndAddToCart(name, quantity = 1) {
         await ui5.userInteraction.fill(this.SEARCH_FIELD_SELECTOR, name);
-        await ui5.assertion.expectToBeVisible({ elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" } });
-        const productSelector = { elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" } };
+        await ui5.assertion.expectToBeVisible({
+            elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" }
+        });
+        const productSelector = {
+            elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" }
+        };
         const productName = await ui5.element.getPropertyValue(productSelector, 'title', 0);
         const productPrice = parseFloat(await ui5.element.getPropertyValue(productSelector, 'number', 0));
         global.secondProduct = { name: productName, price: productPrice, quantity };
