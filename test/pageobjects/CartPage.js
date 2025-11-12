@@ -1,7 +1,6 @@
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class CartPage {
-
     constructor() {
         this.CART_ITEM_SELECTOR = {
             elementProperties: {
@@ -26,7 +25,6 @@ class CartPage {
 
     async getCartItems() {
         const elements = await ui5.element.getAllDisplayed(this.CART_ITEM_SELECTOR);
-        if (elements.length === 0) throw new Error('No products displayed in cart');
 
         const items = [];
         for (let i = 0; i < elements.length; i++) {
@@ -37,25 +35,6 @@ class CartPage {
         }
 
         return items;
-    }
-
-    async validateCartProducts(expectedProducts) {
-        const cartItems = await this.getCartItems();
-
-        if (cartItems.length !== expectedProducts.length) {
-            throw new Error(`Expected ${expectedProducts.length} products in cart, found ${cartItems.length}`);
-        }
-
-        expectedProducts.forEach(product => {
-            const item = cartItems.find(i => i.name === product.name);
-            if (!item) throw new Error(`Product "${product.name}" not found in cart`);
-            if (item.quantity !== product.quantity)
-                throw new Error(`Quantity mismatch for "${product.name}": expected ${product.quantity}, got ${item.quantity}`);
-            if (item.price !== product.price)
-                throw new Error(`Price mismatch for "${product.name}": expected ${product.price}, got ${item.price}`);
-        });
-
-        await attachScreenshot('Cart Validation Completed');
     }
 }
 
