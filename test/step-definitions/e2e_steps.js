@@ -15,7 +15,9 @@ When('Filter products by availability', async () => {
 });
 
 When('Add first filtered product to cart', async () => {
-    await HomePage.selectAndStoreFirstProduct();
+    const product = await HomePage.getFirstProductDetails();
+    global.filteredProduct = product;
+    await HomePage.selectFirstProduct();
     await HomePage.addProductToCart();
 });
 
@@ -24,7 +26,8 @@ When('Navigate back to the category page', async () => {
 });
 
 When('Search product {string} and add {string} items to cart', async (name, qty) => {
-    await HomePage.searchProductAndAddToCart(name, parseInt(qty));
+    const product = await HomePage.searchProductAndAddToCart(name, parseInt(qty));
+    global.secondProduct = product;
 });
 
 When('Navigate to the cart', async () => {
