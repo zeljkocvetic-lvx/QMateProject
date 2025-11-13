@@ -14,34 +14,18 @@ When('Select category {string}', async (name) => {
 });
 
 When('Filter products by availability', async () => {
-
     await HomePage.openFilterDialog();
     await attachScreenshot('Filter Dialog Opened');
 
-
-    const criterionSelector = {
-        elementProperties: {
-            viewName: "sap.ui.demo.cart.view.Category",
-            metadata: "sap.m.StandardListItem",
-            title: "Availability"
-        }
-    };
+    const criterionSelector = HomePage.AVAILABILITY_CRITERION_SELECTOR;
     await ui5.assertion.expectToBeVisible(criterionSelector);
     await ui5.userInteraction.click(criterionSelector);
     await attachScreenshot('Availability Criterion Selected');
 
-
-    const optionSelector = {
-        elementProperties: {
-            viewName: "sap.ui.demo.cart.view.Category",
-            metadata: "sap.m.StandardListItem",
-            title: "Available"
-        }
-    };
+    const optionSelector = HomePage.AVAILABILITY_OPTION_SELECTOR;
     await ui5.assertion.expectToBeVisible(optionSelector);
     await ui5.userInteraction.click(optionSelector);
     await attachScreenshot('Available Option Selected');
-
 
     await HomePage.confirmFilterSelection();
     await attachScreenshot('Products Filtered by Availability');
@@ -50,7 +34,7 @@ When('Filter products by availability', async () => {
 When('Add first filtered product to cart', async function () {
     const product = await HomePage.getFirstProductDetails();
     await HomePage.selectFirstProduct();
-    await HomePage.addProductToCart();
+    await HomePage.clickCartButton(); // Updated method
     this.filteredProduct = { ...product, quantity: 1 };
     await attachScreenshot(`First Product Added to Cart: ${product.name}`);
 });
@@ -64,7 +48,11 @@ When('Search product {string} and add {string} items to cart', async function (n
     const quantity = parseInt(qty, 10);
     await HomePage.searchProduct(name);
     const product = await HomePage.selectSearchedProduct();
-    await HomePage.addProductToCart(quantity);
+
+    for (let i = 0; i < quantity; i++) {
+        await HomePage.clickCartButton(); // Click once per quantity
+    }
+
     this.secondProduct = { ...product, quantity };
     await attachScreenshot(`Searched Product Added to Cart: ${product.name} x${quantity}`);
 });

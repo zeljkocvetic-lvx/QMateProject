@@ -1,8 +1,6 @@
-import { attachScreenshot } from '../helpers/screenshotHelper.js';
-
 class HomePage {
     constructor() {
-        // --- Selectors ---
+        //  Selectors 
         this.PRODUCT_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -96,7 +94,7 @@ class HomePage {
         };
     }
 
-    // --- Navigation and actions ---
+    //  Navigation and actions 
     async openApp() {
         await browser.url(
             'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
@@ -137,7 +135,7 @@ class HomePage {
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
-    // --- Product handling ---
+    //  Product handling 
     async getFirstProductDetails() {
         const product = {
             name: await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0),
@@ -160,10 +158,8 @@ class HomePage {
         global.filteredProduct = { ...product };
     }
 
-    async addProductToCart(times = 1) {
-        for (let i = 0; i < times; i++) {
-            await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
-        }
+    async clickCartButton() {
+        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
     async goBackToCategory() {
