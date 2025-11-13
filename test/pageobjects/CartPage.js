@@ -24,7 +24,6 @@ class CartPage {
 
     async getCartItems() {
         const elements = await ui5.element.getAllDisplayed(this.CART_ITEM_SELECTOR);
-
         const items = [];
 
         for (let i = 0; i < elements.length; i++) {
@@ -33,7 +32,6 @@ class CartPage {
                 quantity: parseInt(await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'intro', i)),
                 price: parseFloat(await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'number', i))
             };
-
             items.push(product);
         }
 
