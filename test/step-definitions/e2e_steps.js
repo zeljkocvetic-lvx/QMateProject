@@ -8,9 +8,9 @@ Given('Open the app', async () => {
     await attachScreenshot('Home Page Opened');
 });
 
-When('Select category {string}', async (name) => {
-    await HomePage.selectCategoryByName(name);
-    await attachScreenshot(`Category "${name}" Selected`);
+When('Select category {string}', async (categoryName) => {
+    await HomePage.selectCategoryByName(categoryName);
+    await attachScreenshot(`Category "${categoryName}" Selected`);
 });
 
 When('Filter products by availability', async () => {
@@ -32,11 +32,11 @@ When('Filter products by availability', async () => {
 });
 
 When('Add first filtered product to cart', async function () {
-    const product = await HomePage.getFirstProductDetails();
+    const firstProduct = await HomePage.getFirstProductDetails();
     await HomePage.selectFirstProduct();
-    await HomePage.clickCartButton(); // Updated method
-    this.filteredProduct = { ...product, quantity: 1 };
-    await attachScreenshot(`First Product Added to Cart: ${product.name}`);
+    await HomePage.clickCartButton();
+    this.filteredProduct = { ...firstProduct, quantity: 1 };
+    await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
 });
 
 When('Navigate back to the category page', async () => {
@@ -44,17 +44,17 @@ When('Navigate back to the category page', async () => {
     await attachScreenshot('Returned to Category Page');
 });
 
-When('Search product {string} and add {string} items to cart', async function (name, qty) {
-    const quantity = parseInt(qty, 10);
-    await HomePage.searchProduct(name);
-    const product = await HomePage.selectSearchedProduct();
+When('Search product {string} and add {string} items to cart', async function (productName, quantityStr) {
+    const quantity = parseInt(quantityStr, 10);
+    await HomePage.searchProduct(productName);
+    const searchedProduct = await HomePage.selectSearchedProduct();
 
     for (let i = 0; i < quantity; i++) {
-        await HomePage.clickCartButton(); // Click once per quantity
+        await HomePage.clickCartButton();
     }
 
-    this.secondProduct = { ...product, quantity };
-    await attachScreenshot(`Searched Product Added to Cart: ${product.name} x${quantity}`);
+    this.secondProduct = { ...searchedProduct, quantity };
+    await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
 });
 
 When('Navigate to the cart', async () => {
@@ -83,7 +83,6 @@ Then(
             return acc;
         }, {});
 
-        // Assertions
         for (const expected of expectedProducts) {
             const actual = aggregatedCart[expected.name];
 
