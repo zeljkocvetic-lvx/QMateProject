@@ -14,7 +14,36 @@ When('Select category {string}', async (name) => {
 });
 
 When('Filter products by availability', async () => {
-    await HomePage.filterByAvailability();
+
+    await HomePage.openFilterDialog();
+    await attachScreenshot('Filter Dialog Opened');
+
+
+    const criterionSelector = {
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.StandardListItem",
+            title: "Availability"
+        }
+    };
+    await ui5.assertion.expectToBeVisible(criterionSelector);
+    await ui5.userInteraction.click(criterionSelector);
+    await attachScreenshot('Availability Criterion Selected');
+
+
+    const optionSelector = {
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.StandardListItem",
+            title: "Available"
+        }
+    };
+    await ui5.assertion.expectToBeVisible(optionSelector);
+    await ui5.userInteraction.click(optionSelector);
+    await attachScreenshot('Available Option Selected');
+
+
+    await HomePage.confirmFilterSelection();
     await attachScreenshot('Products Filtered by Availability');
 });
 
@@ -32,7 +61,7 @@ When('Navigate back to the category page', async () => {
 });
 
 When('Search product {string} and add {string} items to cart', async function (name, qty) {
-    const quantity = parseInt(qty);
+    const quantity = parseInt(qty, 10);
     await HomePage.searchProduct(name);
     const product = await HomePage.selectSearchedProduct();
     await HomePage.addProductToCart(quantity);
@@ -57,7 +86,6 @@ Then(
 
         const expectedProducts = [this.filteredProduct, this.secondProduct];
 
-        // Aggregate items by name (in case quantities merge)
         const aggregatedCart = cartItems.reduce((acc, item) => {
             if (!acc[item.name]) {
                 acc[item.name] = { ...item };
@@ -67,7 +95,7 @@ Then(
             return acc;
         }, {});
 
-        // Assertion logic
+        // Assertions
         for (const expected of expectedProducts) {
             const actual = aggregatedCart[expected.name];
 

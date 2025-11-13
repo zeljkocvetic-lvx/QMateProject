@@ -1,9 +1,8 @@
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class HomePage {
     constructor() {
-        //  Selectors 
-
-
+        // --- Selectors ---
         this.PRODUCT_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -17,7 +16,6 @@ class HomePage {
                 metadata: "sap.m.StandardListItem"
             }
         };
-
 
         this.FILTER_BUTTON_SELECTOR = {
             elementProperties: {
@@ -59,7 +57,6 @@ class HomePage {
             }
         };
 
-
         this.SEARCH_FIELD_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
@@ -74,7 +71,6 @@ class HomePage {
                 metadata: "sap.m.ObjectListItem"
             }
         };
-
 
         this.CART_BUTTON_SELECTOR = {
             elementProperties: {
@@ -100,8 +96,7 @@ class HomePage {
         };
     }
 
-    //  Navigation and actions 
-
+    // --- Navigation and actions ---
     async openApp() {
         await browser.url(
             'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
@@ -110,7 +105,10 @@ class HomePage {
     }
 
     async selectCategoryByName(categoryName) {
-        const selector = { ...this.CATEGORY_ITEM_SELECTOR, elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: categoryName } };
+        const selector = {
+            ...this.CATEGORY_ITEM_SELECTOR,
+            elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: categoryName }
+        };
         await ui5.assertion.expectToBeVisible(selector);
         await ui5.userInteraction.click(selector);
     }
@@ -120,12 +118,18 @@ class HomePage {
     }
 
     async selectFilterCriterion(criterion) {
-        const selector = { ...this.CATEGORY_ITEM_SELECTOR, elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: criterion } };
+        const selector = {
+            ...this.CATEGORY_ITEM_SELECTOR,
+            elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: criterion }
+        };
         await ui5.userInteraction.click(selector);
     }
 
     async selectFilterOption(option) {
-        const selector = { ...this.CATEGORY_ITEM_SELECTOR, elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: option } };
+        const selector = {
+            ...this.CATEGORY_ITEM_SELECTOR,
+            elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: option }
+        };
         await ui5.userInteraction.click(selector);
     }
 
@@ -133,15 +137,7 @@ class HomePage {
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
-    async filterByAvailability() {
-        await this.openFilterDialog();
-        await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
-        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_SELECTOR);
-        await this.confirmFilterSelection();
-    }
-
-    //  Product handling 
-
+    // --- Product handling ---
     async getFirstProductDetails() {
         const product = {
             name: await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0),
