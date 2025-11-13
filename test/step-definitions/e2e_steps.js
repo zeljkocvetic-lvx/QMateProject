@@ -5,14 +5,17 @@ import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 Given('Open the app', async () => {
     await HomePage.openApp();
+    await attachScreenshot('Home Page Opened');
 });
 
 When('Select category {string}', async (name) => {
     await HomePage.selectCategoryByName(name);
+    await attachScreenshot(`Category "${name}" Selected`);
 });
 
 When('Filter products by availability', async () => {
     await HomePage.filterByAvailability();
+    await attachScreenshot('Products Filtered by Availability');
 });
 
 When('Add first filtered product to cart', async function () {
@@ -20,10 +23,12 @@ When('Add first filtered product to cart', async function () {
     await HomePage.selectFirstProduct();
     await HomePage.addProductToCart();
     this.filteredProduct = { ...product, quantity: 1 };
+    await attachScreenshot(`First Product Added to Cart: ${product.name}`);
 });
 
 When('Navigate back to the category page', async () => {
     await HomePage.goBackToCategory();
+    await attachScreenshot('Returned to Category Page');
 });
 
 When('Search product {string} and add {string} items to cart', async function (name, qty) {
@@ -32,16 +37,19 @@ When('Search product {string} and add {string} items to cart', async function (n
     const product = await HomePage.selectSearchedProduct();
     await HomePage.addProductToCart(quantity);
     this.secondProduct = { ...product, quantity };
+    await attachScreenshot(`Searched Product Added to Cart: ${product.name} x${quantity}`);
 });
 
 When('Navigate to the cart', async () => {
     await HomePage.goToCart();
+    await attachScreenshot('Navigated to Cart');
 });
 
 Then(
     'Verify cart contains exactly the products added with correct name, quantity and price',
     async function () {
         const cartItems = await CartPage.getCartItems();
+        await attachScreenshot('Cart Items Retrieved');
 
         if (!cartItems || cartItems.length === 0) {
             throw new Error('No products displayed in cart');
@@ -49,7 +57,7 @@ Then(
 
         const expectedProducts = [this.filteredProduct, this.secondProduct];
 
-
+        // Aggregate items by name (in case quantities merge)
         const aggregatedCart = cartItems.reduce((acc, item) => {
             if (!acc[item.name]) {
                 acc[item.name] = { ...item };

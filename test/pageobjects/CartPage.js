@@ -1,5 +1,3 @@
-import { attachScreenshot } from '../helpers/screenshotHelper.js';
-
 class CartPage {
     constructor() {
         this.CART_ITEM_SELECTOR = {
@@ -19,7 +17,6 @@ class CartPage {
 
     async openCart() {
         await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
-        await attachScreenshot('Cart Opened');
     }
 
     async getCartItems() {
