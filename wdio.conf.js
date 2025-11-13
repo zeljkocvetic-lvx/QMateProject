@@ -124,7 +124,10 @@ export const config = {
     // Cucumber options
     cucumberOpts: {
         // require step definitions
-        require: ['./test/step-definitions/*.js'],
+        require: ['./test/step-definitions/*.js',
+            './test/support/world.js'
+        ],
+
         // timeout for step definitions
         timeout: 60000
     },
