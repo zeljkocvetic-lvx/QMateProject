@@ -2,41 +2,79 @@ import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 class HomePage {
     constructor() {
+        //  Selectors 
         this.PRODUCT_ITEM_SELECTOR = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.ObjectListItem" }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.ObjectListItem"
+            }
         };
+
         this.FILTER_BUTTON_SELECTOR = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.Button", id: "*masterListFilterButton" }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*masterListFilterButton"
+            }
         };
+
         this.OK_BUTTON_SELECTOR = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.Button", id: "*categoryFilterDialog-acceptbutton" }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*categoryFilterDialog-acceptbutton"
+            }
         };
+
         this.BACK_BUTTON_SELECTOR = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.Button", id: "*page-navButton" }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*page-navButton"
+            }
         };
+
         this.SEARCH_FIELD_SELECTOR = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.SearchField", id: "*searchField" }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.SearchField",
+                id: "*searchField"
+            }
         };
+
         this.CART_BUTTON_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Product",
                 metadata: "sap.m.ToggleButton",
-                tooltip: [{ model: "i18n", path: "toCartButtonTooltip", value: "Show Shopping Cart", type: "string" }]
+                tooltip: [
+                    {
+                        model: "i18n",
+                        path: "toCartButtonTooltip",
+                        value: "Show Shopping Cart",
+                        type: "string"
+                    }
+                ]
             }
         };
     }
 
-    // --- Navigation and actions ---
+    //  Navigation and actions 
 
     async openApp() {
-        await browser.url('https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon');
+        await browser.url(
+            'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
+        );
         await ui5.assertion.expectToBeVisible(this.SEARCH_FIELD_SELECTOR);
         await attachScreenshot('Home Page Opened');
     }
 
     async selectCategoryByName(categoryName) {
         const categorySelector = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.StandardListItem", title: categoryName }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.StandardListItem",
+                title: categoryName
+            }
         };
         await ui5.assertion.expectToBeVisible(categorySelector);
         await ui5.userInteraction.click(categorySelector);
@@ -49,14 +87,22 @@ class HomePage {
 
     async selectFilterCriterion(criterion) {
         const criterionSelector = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.StandardListItem", title: criterion }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: criterion
+            }
         };
         await ui5.userInteraction.click(criterionSelector);
     }
 
     async selectFilterOption(option) {
         const optionSelector = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.StandardListItem", title: option }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: option
+            }
         };
         await ui5.userInteraction.click(optionSelector);
     }
@@ -73,7 +119,7 @@ class HomePage {
         await this.confirmFilterSelection();
     }
 
-    // --- Product handling ---
+    //  Product handling 
 
     async getFirstProductDetails() {
         const product = {
@@ -96,7 +142,6 @@ class HomePage {
             price: parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0)),
             quantity: 1
         };
-
         global.filteredProduct = { ...product };
         await attachScreenshot(`Stored Product: ${product.name}`);
     }
@@ -129,7 +174,10 @@ class HomePage {
 
     async selectSearchedProduct() {
         const productSelector = {
-            elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" }
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.ObjectListItem"
+            }
         };
         await ui5.assertion.expectToBeVisible(productSelector);
 
