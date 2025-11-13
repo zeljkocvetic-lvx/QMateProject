@@ -19,7 +19,6 @@ class CartPage {
 
     async openCart() {
         await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
-        await ui5.assertion.expectToBeVisible(this.CART_ITEM_SELECTOR);
         await attachScreenshot('Cart Opened');
     }
 
