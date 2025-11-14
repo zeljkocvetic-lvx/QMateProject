@@ -96,9 +96,10 @@ class HomePage {
 
     //  Navigation and actions 
     async openApp() {
-        await browser.url(
+        await common.navigation.navigateToUrl(
             'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
         );
+
         await ui5.assertion.expectToBeVisible(this.SEARCH_FIELD_SELECTOR);
     }
 
