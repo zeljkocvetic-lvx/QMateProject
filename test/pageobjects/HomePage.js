@@ -94,7 +94,8 @@ class HomePage {
         };
     }
 
-    //  Navigation and actions 
+    // Navigation and actions
+
     async openApp() {
         await common.navigation.navigateToUrl(
             'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
@@ -106,8 +107,12 @@ class HomePage {
     async selectCategoryByName(categoryName) {
         const selector = {
             ...this.CATEGORY_ITEM_SELECTOR,
-            elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: categoryName }
+            elementProperties: {
+                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
+                title: categoryName
+            }
         };
+
         await ui5.assertion.expectToBeVisible(selector);
         await ui5.userInteraction.click(selector);
     }
@@ -119,7 +124,10 @@ class HomePage {
     async selectFilterCriterion(criterion) {
         const selector = {
             ...this.CATEGORY_ITEM_SELECTOR,
-            elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: criterion }
+            elementProperties: {
+                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
+                title: criterion
+            }
         };
         await ui5.userInteraction.click(selector);
     }
@@ -127,7 +135,10 @@ class HomePage {
     async selectFilterOption(option) {
         const selector = {
             ...this.CATEGORY_ITEM_SELECTOR,
-            elementProperties: { ...this.CATEGORY_ITEM_SELECTOR.elementProperties, title: option }
+            elementProperties: {
+                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
+                title: option
+            }
         };
         await ui5.userInteraction.click(selector);
     }
@@ -136,27 +147,20 @@ class HomePage {
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
-    //  Product handling 
+    // Product handling
+
     async getFirstProductDetails() {
         const product = {
             name: await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0),
             price: parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0)),
             quantity: 1
         };
+
         return product;
     }
 
     async selectFirstProduct() {
         await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
-    }
-
-    async selectAndStoreFirstProduct() {
-        const product = {
-            name: await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0),
-            price: parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0)),
-            quantity: 1
-        };
-        global.filteredProduct = { ...product };
     }
 
     async clickCartButton() {
