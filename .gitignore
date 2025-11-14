@@ -5,6 +5,7 @@ node_modules/
 allure-results/
 allure-report/
 node_modules/
+*.allure
 package-lock.json
 package.json
 
