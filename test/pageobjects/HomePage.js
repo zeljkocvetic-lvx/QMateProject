@@ -1,6 +1,5 @@
 class HomePage {
     constructor() {
-        // Selectors
         this.PRODUCT_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -94,7 +93,32 @@ class HomePage {
         };
     }
 
-    // Navigation and actions
+    getCategorySelectorByName(category) {
+        return {
+            ...this.CATEGORY_ITEM_SELECTOR,
+            elementProperties: {
+                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
+                title: category
+            }
+        };
+    }
+
+    async click(selector, index = 0) {
+        await ui5.assertion.expectToBeVisible(selector);
+        await ui5.userInteraction.click(selector, index);
+    }
+
+    async getListItemDetails(selector, index = 0) {
+        return {
+            name: await ui5.element.getPropertyValue(selector, 'title', index),
+            price: parseFloat(await ui5.element.getPropertyValue(selector, 'number', index))
+        };
+    }
+
+    async addProductToCart() {
+        await this.click(this.ADD_TO_CART_BUTTON_SELECTOR);
+    }
+
     async openApp() {
         await common.navigation.navigateToUrl(
             'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
@@ -103,72 +127,55 @@ class HomePage {
     }
 
     async selectCategoryByName(categoryName) {
-        const selector = {
-            ...this.CATEGORY_ITEM_SELECTOR,
-            elementProperties: {
-                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
-                title: categoryName
-            }
-        };
-        await ui5.assertion.expectToBeVisible(selector);
-        await ui5.userInteraction.click(selector);
+        const selector = this.getCategorySelectorByName(categoryName);
+        await this.click(selector);
     }
 
     async openFilterDialog() {
-        await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
+        await this.click(this.FILTER_BUTTON_SELECTOR);
     }
 
     async confirmFilterSelection() {
-        await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
+        await this.click(this.OK_BUTTON_SELECTOR);
     }
 
     async goBackToCategory() {
-        await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
+        await this.click(this.BACK_BUTTON_SELECTOR);
     }
 
     async clickCartButton() {
-        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
+        await this.addProductToCart();
     }
 
     async goToCart() {
-        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
+        await this.click(this.CART_BUTTON_SELECTOR);
     }
 
-    // Product handling
     async getFirstProductDetails() {
         return {
-            name: await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0),
-            price: parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0)),
+            ...(await this.getListItemDetails(this.PRODUCT_ITEM_SELECTOR, 0)),
             quantity: 1
         };
     }
 
     async selectFirstProduct() {
-        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
+        await this.click(this.PRODUCT_ITEM_SELECTOR, 0);
     }
 
-    // Filter helpers
     async filterByAvailability() {
         await this.openFilterDialog();
-        await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
-        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_SELECTOR);
+        await this.click(this.AVAILABILITY_CRITERION_SELECTOR);
+        await this.click(this.AVAILABILITY_OPTION_SELECTOR);
         await this.confirmFilterSelection();
     }
 
-    // Search helpers
     async searchProduct(name) {
         await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
     }
 
     async selectSearchedProduct() {
-        await ui5.assertion.expectToBeVisible(this.SEARCH_RESULT_SELECTOR);
-
-        const product = {
-            name: await ui5.element.getPropertyValue(this.SEARCH_RESULT_SELECTOR, 'title', 0),
-            price: parseFloat(await ui5.element.getPropertyValue(this.SEARCH_RESULT_SELECTOR, 'number', 0))
-        };
-
-        await ui5.userInteraction.click(this.SEARCH_RESULT_SELECTOR, 0);
+        const product = await this.getListItemDetails(this.SEARCH_RESULT_SELECTOR, 0);
+        await this.click(this.SEARCH_RESULT_SELECTOR, 0);
         return product;
     }
 
