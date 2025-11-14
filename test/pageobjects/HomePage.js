@@ -7,13 +7,6 @@ class HomePage {
             }
         };
 
-        this.CATEGORY_ITEM_SELECTOR = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Home",
-                metadata: "sap.m.StandardListItem"
-            }
-        };
-
         this.FILTER_BUTTON_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -93,12 +86,13 @@ class HomePage {
         };
     }
 
-    getCategorySelectorByName(category) {
+    // Generate precise selector for a category
+    getCategorySelectorByName(categoryName) {
         return {
-            ...this.CATEGORY_ITEM_SELECTOR,
             elementProperties: {
-                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
-                title: category
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.StandardListItem",
+                title: categoryName
             }
         };
     }
