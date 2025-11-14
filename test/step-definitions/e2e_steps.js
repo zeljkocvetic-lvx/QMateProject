@@ -1,6 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import HomePage from '../pageobjects/HomePage.js';
-import CartPage from '../pageobjects/CartPage.js';
+import CartPage from '../pageobjects/CheckoutPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 Given('Open the app', async () => {
@@ -22,6 +22,7 @@ When('Add first filtered product to cart', async function () {
     const firstProduct = await HomePage.getFirstProductDetails();
     await HomePage.selectFirstProduct();
     await HomePage.clickCartButton();
+
     this.addProduct({ ...firstProduct, quantity: 1 });
     await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
 });
@@ -54,16 +55,18 @@ Then('Verify cart contains exactly the products added with correct name, quantit
     const expectedProducts = this.getProducts();
 
     const aggregatedCart = cartItems.reduce((acc, item) => {
-        if (!acc[item.name]) {
-            acc[item.name] = { ...item };
+        const key = `${item.name}-${item.price}`;
+        if (!acc[key]) {
+            acc[key] = { ...item };
         } else {
-            acc[item.name].quantity += item.quantity;
+            acc[key].quantity += item.quantity;
         }
         return acc;
     }, {});
 
     expectedProducts.forEach(expected => {
-        const actual = aggregatedCart[expected.name];
+        const key = `${expected.name}-${expected.price}`;
+        const actual = aggregatedCart[key];
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);
     });
