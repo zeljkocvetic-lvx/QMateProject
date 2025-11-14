@@ -64,8 +64,7 @@ Then('Verify cart contains exactly the products added with correct name, quantit
     expectedProducts.forEach(expected => {
         const actual = aggregatedCart[expected.name];
         expect(actual).toBeDefined();
-        expect(actual.quantity).toEqual(expected.quantity);
-        expect(actual.price).toEqual(expected.price);
+        expect(actual).toEqual(expected);
     });
 
     await attachScreenshot('Final Cart Verification');
