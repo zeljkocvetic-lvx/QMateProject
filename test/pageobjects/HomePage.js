@@ -86,7 +86,6 @@ class HomePage {
         };
     }
 
-    // Generate precise selector for a category
     getCategorySelectorByName(categoryName) {
         return {
             elementProperties: {
@@ -97,7 +96,7 @@ class HomePage {
         };
     }
 
-    async click(selector, index = 0) {
+    async clickElement(selector, index = 0) {
         await ui5.assertion.expectToBeVisible(selector);
         await ui5.userInteraction.click(selector, index);
     }
@@ -110,7 +109,7 @@ class HomePage {
     }
 
     async addProductToCart() {
-        await this.click(this.ADD_TO_CART_BUTTON_SELECTOR);
+        await this.clickElement(this.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
     async openApp() {
@@ -122,19 +121,19 @@ class HomePage {
 
     async selectCategoryByName(categoryName) {
         const selector = this.getCategorySelectorByName(categoryName);
-        await this.click(selector);
+        await this.clickElement(selector);
     }
 
     async openFilterDialog() {
-        await this.click(this.FILTER_BUTTON_SELECTOR);
+        await this.clickElement(this.FILTER_BUTTON_SELECTOR);
     }
 
     async confirmFilterSelection() {
-        await this.click(this.OK_BUTTON_SELECTOR);
+        await this.clickElement(this.OK_BUTTON_SELECTOR);
     }
 
     async goBackToCategory() {
-        await this.click(this.BACK_BUTTON_SELECTOR);
+        await this.clickElement(this.BACK_BUTTON_SELECTOR);
     }
 
     async clickCartButton() {
@@ -142,7 +141,7 @@ class HomePage {
     }
 
     async goToCart() {
-        await this.click(this.CART_BUTTON_SELECTOR);
+        await this.clickElement(this.CART_BUTTON_SELECTOR);
     }
 
     async getFirstProductDetails() {
@@ -153,13 +152,13 @@ class HomePage {
     }
 
     async selectFirstProduct() {
-        await this.click(this.PRODUCT_ITEM_SELECTOR, 0);
+        await this.clickElement(this.PRODUCT_ITEM_SELECTOR, 0);
     }
 
     async filterByAvailability() {
         await this.openFilterDialog();
-        await this.click(this.AVAILABILITY_CRITERION_SELECTOR);
-        await this.click(this.AVAILABILITY_OPTION_SELECTOR);
+        await this.clickElement(this.AVAILABILITY_CRITERION_SELECTOR);
+        await this.clickElement(this.AVAILABILITY_OPTION_SELECTOR);
         await this.confirmFilterSelection();
     }
 
@@ -169,7 +168,7 @@ class HomePage {
 
     async selectSearchedProduct() {
         const product = await this.getListItemDetails(this.SEARCH_RESULT_SELECTOR, 0);
-        await this.click(this.SEARCH_RESULT_SELECTOR, 0);
+        await this.clickElement(this.SEARCH_RESULT_SELECTOR, 0);
         return product;
     }
 
