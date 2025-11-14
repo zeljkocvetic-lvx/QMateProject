@@ -1,5 +1,4 @@
 import { Given, When, Then } from '@cucumber/cucumber';
-import assert from 'assert';
 import HomePage from '../pageobjects/HomePage.js';
 import CartPage from '../pageobjects/CartPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
@@ -24,7 +23,7 @@ When('Add first filtered product to cart', async function () {
     await HomePage.selectFirstProduct();
     await HomePage.clickCartButton();
 
-    this.filteredProduct = { ...firstProduct, quantity: 1 };
+    this.addProduct({ ...firstProduct, quantity: 1 });
     await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
 });
 
@@ -33,46 +32,38 @@ When('Navigate back to the category page', async () => {
     await attachScreenshot('Returned to Category Page');
 });
 
-When(
-    'Search product {string} and add {string} items to cart',
-    async function (productName, quantityString) {
-        const quantity = parseInt(quantityString, 10);
-        const searchedProduct = await HomePage.searchAndSelectProduct(productName);
+When('Search product {string} and add {string} items to cart', async function (productName, quantityStr) {
+    const quantity = parseInt(quantityStr, 10);
+    const searchedProduct = await HomePage.searchAndSelectProduct(productName);
 
-        for (let i = 0; i < quantity; i++) {
-            await HomePage.clickCartButton();
-        }
-
-        this.secondProduct = { ...searchedProduct, quantity };
-        await attachScreenshot(
-            `Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`
-        );
+    for (let i = 0; i < quantity; i++) {
+        await HomePage.clickCartButton();
     }
-);
+
+    this.addProduct({ ...searchedProduct, quantity });
+    await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
+});
 
 When('Navigate to the cart', async () => {
     await HomePage.goToCart();
     await attachScreenshot('Navigated to Cart');
 });
 
-Then(
-    'Verify cart contains exactly the products added with correct name, quantity and price',
-    async function () {
-        const cartItems = await CartPage.getCartItems();
-        await attachScreenshot('Cart Items Retrieved');
+Then('Verify cart contains exactly the products added with correct name, quantity and price', async function () {
+    const cartItems = await CartPage.getCartItems();
+    await attachScreenshot('Cart Items Retrieved');
 
-        expect(cartItems.length).toBeGreaterThan(0);
+    expect(cartItems.length).toBeGreaterThan(0);
 
-        const expectedProducts = [this.filteredProduct, this.secondProduct];
+    const expectedProducts = this.getProducts();
 
-        for (const expected of expectedProducts) {
-            const actual = cartItems.find(item => item.name === expected.name);
+    expectedProducts.forEach(expected => {
+        const actual = cartItems.find(item => item.name === expected.name);
 
-            expect(actual).toBeDefined();
-            expect(actual.quantity).toEqual(expected.quantity);
-            expect(actual.price).toEqual(expected.price);
-        }
+        expect(actual).toBeDefined();
+        expect(actual.quantity).toEqual(expected.quantity);
+        expect(actual.price).toEqual(expected.price);
+    });
 
-        await attachScreenshot('Final Cart Verification');
-    }
-);
+    await attachScreenshot('Final Cart Verification');
+});
