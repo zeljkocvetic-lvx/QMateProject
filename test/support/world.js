@@ -6,9 +6,7 @@ class CustomWorld {
     }
 
     addProduct(product) {
-        const existing = this.cartProducts.find(
-            p => p.name === product.name && p.price === product.price
-        );
+        const existing = this.cartProducts.find(p => p.name === product.name);
 
         if (existing) {
             existing.quantity += product.quantity;
@@ -25,11 +23,9 @@ class CustomWorld {
         this.cartProducts = [];
     }
 
-    getProductByNameAndPrice(name, price) {
-        const product = this.cartProducts.find(
-            p => p.name === name && p.price === price
-        );
-        expect(product, `Product "${name}" with price ${price} should exist in world`).toBeDefined();
+    getProductByName(name) {
+        const product = this.cartProducts.find(p => p.name === name);
+        expect(product, `Product "${name}" should exist in world`).toBeDefined();
         return product;
     }
 }
