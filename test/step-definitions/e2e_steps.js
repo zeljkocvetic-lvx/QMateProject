@@ -22,7 +22,6 @@ When('Add first filtered product to cart', async function () {
     const firstProduct = await HomePage.getFirstProductDetails();
     await HomePage.selectFirstProduct();
     await HomePage.clickCartButton();
-
     this.addProduct({ ...firstProduct, quantity: 1 });
     await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
 });
@@ -35,11 +34,9 @@ When('Navigate back to the category page', async () => {
 When('Search product {string} and add {string} items to cart', async function (productName, quantityStr) {
     const quantity = parseInt(quantityStr, 10);
     const searchedProduct = await HomePage.searchAndSelectProduct(productName);
-
     for (let i = 0; i < quantity; i++) {
         await HomePage.clickCartButton();
     }
-
     this.addProduct({ ...searchedProduct, quantity });
     await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
 });
@@ -49,35 +46,27 @@ When('Navigate to the cart', async () => {
     await attachScreenshot('Navigated to Cart');
 });
 
-Then(
-    'Verify cart contains exactly the products added with correct name, quantity and price',
-    async function () {
-        const cartItems = await CartPage.getCartItems();
-        await attachScreenshot('Cart Items Retrieved');
+Then('Verify cart contains exactly the products added with correct name, quantity and price', async function () {
+    const cartItems = await CartPage.getCartItems();
+    await attachScreenshot('Cart Items Retrieved');
 
-        expect(cartItems.length).toBeGreaterThan(0);
+    const expectedProducts = this.getProducts();
 
-        const expectedProducts = this.getProducts();
+    const aggregatedCart = cartItems.reduce((acc, item) => {
+        if (!acc[item.name]) {
+            acc[item.name] = { ...item };
+        } else {
+            acc[item.name].quantity += item.quantity;
+        }
+        return acc;
+    }, {});
 
-        // Aggregate cart items by product name in case the same product is on multiple lines
-        const aggregatedCart = cartItems.reduce((acc, item) => {
-            if (!acc[item.name]) {
-                acc[item.name] = { ...item };
-            } else {
-                acc[item.name].quantity += item.quantity;
-            }
-            return acc;
-        }, {});
+    expectedProducts.forEach(expected => {
+        const actual = aggregatedCart[expected.name];
+        expect(actual).toBeDefined();
+        expect(actual.quantity).toEqual(expected.quantity);
+        expect(actual.price).toEqual(expected.price);
+    });
 
-        // Verify each expected product
-        expectedProducts.forEach(expected => {
-            const actual = aggregatedCart[expected.name];
-
-            expect(actual).toBeDefined();
-            expect(actual.quantity).toEqual(expected.quantity);
-            expect(actual.price).toEqual(expected.price);
-        });
-
-        await attachScreenshot('Final Cart Verification');
-    }
-);
+    await attachScreenshot('Final Cart Verification');
+});
