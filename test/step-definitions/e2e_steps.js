@@ -1,4 +1,5 @@
 import { Given, When, Then } from '@cucumber/cucumber';
+import assert from 'assert';
 import HomePage from '../pageobjects/HomePage.js';
 import CartPage from '../pageobjects/CartPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
@@ -60,39 +61,16 @@ Then(
         const cartItems = await CartPage.getCartItems();
         await attachScreenshot('Cart Items Retrieved');
 
-        if (!cartItems || cartItems.length === 0) {
-            throw new Error('No products displayed in cart');
-        }
+        expect(cartItems.length).toBeGreaterThan(0);
 
         const expectedProducts = [this.filteredProduct, this.secondProduct];
 
-        const aggregatedCart = cartItems.reduce((acc, item) => {
-            if (!acc[item.name]) {
-                acc[item.name] = { ...item };
-            } else {
-                acc[item.name].quantity += item.quantity;
-            }
-            return acc;
-        }, {});
-
         for (const expected of expectedProducts) {
-            const actual = aggregatedCart[expected.name];
+            const actual = cartItems.find(item => item.name === expected.name);
 
-            if (!actual) {
-                throw new Error(`Product "${expected.name}" not found in cart`);
-            }
-
-            if (actual.quantity !== expected.quantity) {
-                throw new Error(
-                    `Quantity mismatch for "${expected.name}": expected ${expected.quantity}, got ${actual.quantity}`
-                );
-            }
-
-            if (actual.price !== expected.price) {
-                throw new Error(
-                    `Price mismatch for "${expected.name}": expected ${expected.price}, got ${actual.price}`
-                );
-            }
+            expect(actual).toBeDefined();
+            expect(actual.quantity).toEqual(expected.quantity);
+            expect(actual.price).toEqual(expected.price);
         }
 
         await attachScreenshot('Final Cart Verification');
