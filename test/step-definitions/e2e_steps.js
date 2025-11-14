@@ -49,21 +49,35 @@ When('Navigate to the cart', async () => {
     await attachScreenshot('Navigated to Cart');
 });
 
-Then('Verify cart contains exactly the products added with correct name, quantity and price', async function () {
-    const cartItems = await CartPage.getCartItems();
-    await attachScreenshot('Cart Items Retrieved');
+Then(
+    'Verify cart contains exactly the products added with correct name, quantity and price',
+    async function () {
+        const cartItems = await CartPage.getCartItems();
+        await attachScreenshot('Cart Items Retrieved');
 
-    expect(cartItems.length).toBeGreaterThan(0);
+        expect(cartItems.length).toBeGreaterThan(0);
 
-    const expectedProducts = this.getProducts();
+        const expectedProducts = this.getProducts();
 
-    expectedProducts.forEach(expected => {
-        const actual = cartItems.find(item => item.name === expected.name);
+        // Aggregate cart items by product name in case the same product is on multiple lines
+        const aggregatedCart = cartItems.reduce((acc, item) => {
+            if (!acc[item.name]) {
+                acc[item.name] = { ...item };
+            } else {
+                acc[item.name].quantity += item.quantity;
+            }
+            return acc;
+        }, {});
 
-        expect(actual).toBeDefined();
-        expect(actual.quantity).toEqual(expected.quantity);
-        expect(actual.price).toEqual(expected.price);
-    });
+        // Verify each expected product
+        expectedProducts.forEach(expected => {
+            const actual = aggregatedCart[expected.name];
 
-    await attachScreenshot('Final Cart Verification');
-});
+            expect(actual).toBeDefined();
+            expect(actual.quantity).toEqual(expected.quantity);
+            expect(actual.price).toEqual(expected.price);
+        });
+
+        await attachScreenshot('Final Cart Verification');
+    }
+);
