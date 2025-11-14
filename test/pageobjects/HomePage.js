@@ -1,6 +1,6 @@
 class HomePage {
     constructor() {
-        //  Selectors 
+        // Selectors
         this.PRODUCT_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -94,14 +94,11 @@ class HomePage {
         };
     }
 
-
     // Navigation and actions
-
     async openApp() {
         await common.navigation.navigateToUrl(
             'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
         );
-
         await ui5.assertion.expectToBeVisible(this.SEARCH_FIELD_SELECTOR);
     }
 
@@ -113,7 +110,6 @@ class HomePage {
                 title: categoryName
             }
         };
-
         await ui5.assertion.expectToBeVisible(selector);
         await ui5.userInteraction.click(selector);
     }
@@ -122,59 +118,44 @@ class HomePage {
         await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
     }
 
-    async selectFilterCriterion(criterion) {
-        const selector = {
-            ...this.CATEGORY_ITEM_SELECTOR,
-            elementProperties: {
-                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
-                title: criterion
-            }
-        };
-        await ui5.userInteraction.click(selector);
-    }
-
-    async selectFilterOption(option) {
-        const selector = {
-            ...this.CATEGORY_ITEM_SELECTOR,
-            elementProperties: {
-                ...this.CATEGORY_ITEM_SELECTOR.elementProperties,
-                title: option
-            }
-        };
-        await ui5.userInteraction.click(selector);
-    }
-
     async confirmFilterSelection() {
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
-    }
-
-
-    // Product handling
-
-    async getFirstProductDetails() {
-        const product = {
-            name: await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0),
-            price: parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0)),
-            quantity: 1
-        };
-
-        return product;
-    }
-
-    async selectFirstProduct() {
-        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
-    }
-
-    async clickCartButton() {
-        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
     async goBackToCategory() {
         await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
     }
 
-    // Search
+    async clickCartButton() {
+        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
+    }
 
+    async goToCart() {
+        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
+    }
+
+    // Product handling
+    async getFirstProductDetails() {
+        return {
+            name: await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0),
+            price: parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0)),
+            quantity: 1
+        };
+    }
+
+    async selectFirstProduct() {
+        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
+    }
+
+    // Filter helpers
+    async filterByAvailability() {
+        await this.openFilterDialog();
+        await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
+        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_SELECTOR);
+        await this.confirmFilterSelection();
+    }
+
+    // Search helpers
     async searchProduct(name) {
         await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
     }
@@ -191,8 +172,9 @@ class HomePage {
         return product;
     }
 
-    async goToCart() {
-        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
+    async searchAndSelectProduct(name) {
+        await this.searchProduct(name);
+        return await this.selectSearchedProduct();
     }
 }
 

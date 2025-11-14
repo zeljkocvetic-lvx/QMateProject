@@ -14,27 +14,16 @@ When('Select category {string}', async (categoryName) => {
 });
 
 When('Filter products by availability', async () => {
-    await HomePage.openFilterDialog();
-    await attachScreenshot('Filter Dialog Opened');
-
-    await ui5.userInteraction.click(HomePage.AVAILABILITY_CRITERION_SELECTOR);
-    await attachScreenshot('Availability Criterion Selected');
-
-    await ui5.userInteraction.click(HomePage.AVAILABILITY_OPTION_SELECTOR);
-    await attachScreenshot('Available Option Selected');
-
-    await HomePage.confirmFilterSelection();
+    await HomePage.filterByAvailability();
     await attachScreenshot('Products Filtered by Availability');
 });
 
 When('Add first filtered product to cart', async function () {
     const firstProduct = await HomePage.getFirstProductDetails();
-
     await HomePage.selectFirstProduct();
     await HomePage.clickCartButton();
 
     this.filteredProduct = { ...firstProduct, quantity: 1 };
-
     await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
 });
 
@@ -47,16 +36,13 @@ When(
     'Search product {string} and add {string} items to cart',
     async function (productName, quantityString) {
         const quantity = parseInt(quantityString, 10);
-
-        await HomePage.searchProduct(productName);
-        const searchedProduct = await HomePage.selectSearchedProduct();
+        const searchedProduct = await HomePage.searchAndSelectProduct(productName);
 
         for (let i = 0; i < quantity; i++) {
             await HomePage.clickCartButton();
         }
 
         this.secondProduct = { ...searchedProduct, quantity };
-
         await attachScreenshot(
             `Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`
         );
