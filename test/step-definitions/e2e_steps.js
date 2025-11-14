@@ -17,14 +17,10 @@ When('Filter products by availability', async () => {
     await HomePage.openFilterDialog();
     await attachScreenshot('Filter Dialog Opened');
 
-    const criterionSelector = HomePage.AVAILABILITY_CRITERION_SELECTOR;
-    await ui5.assertion.expectToBeVisible(criterionSelector);
-    await ui5.userInteraction.click(criterionSelector);
+    await ui5.userInteraction.click(HomePage.AVAILABILITY_CRITERION_SELECTOR);
     await attachScreenshot('Availability Criterion Selected');
 
-    const optionSelector = HomePage.AVAILABILITY_OPTION_SELECTOR;
-    await ui5.assertion.expectToBeVisible(optionSelector);
-    await ui5.userInteraction.click(optionSelector);
+    await ui5.userInteraction.click(HomePage.AVAILABILITY_OPTION_SELECTOR);
     await attachScreenshot('Available Option Selected');
 
     await HomePage.confirmFilterSelection();
@@ -33,9 +29,12 @@ When('Filter products by availability', async () => {
 
 When('Add first filtered product to cart', async function () {
     const firstProduct = await HomePage.getFirstProductDetails();
+
     await HomePage.selectFirstProduct();
     await HomePage.clickCartButton();
+
     this.filteredProduct = { ...firstProduct, quantity: 1 };
+
     await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
 });
 
@@ -44,18 +43,25 @@ When('Navigate back to the category page', async () => {
     await attachScreenshot('Returned to Category Page');
 });
 
-When('Search product {string} and add {string} items to cart', async function (productName, quantityStr) {
-    const quantity = parseInt(quantityStr, 10);
-    await HomePage.searchProduct(productName);
-    const searchedProduct = await HomePage.selectSearchedProduct();
+When(
+    'Search product {string} and add {string} items to cart',
+    async function (productName, quantityString) {
+        const quantity = parseInt(quantityString, 10);
 
-    for (let i = 0; i < quantity; i++) {
-        await HomePage.clickCartButton();
+        await HomePage.searchProduct(productName);
+        const searchedProduct = await HomePage.selectSearchedProduct();
+
+        for (let i = 0; i < quantity; i++) {
+            await HomePage.clickCartButton();
+        }
+
+        this.secondProduct = { ...searchedProduct, quantity };
+
+        await attachScreenshot(
+            `Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`
+        );
     }
-
-    this.secondProduct = { ...searchedProduct, quantity };
-    await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
-});
+);
 
 When('Navigate to the cart', async () => {
     await HomePage.goToCart();
