@@ -10,7 +10,7 @@ Feature: Complete end-to-end flow with filtered and searched products
         And Filter products by availability
         And Add first filtered product to cart
         And Navigate back to the category page
-        And Search product "<searched_product>" and add "<searched_quantity>" items to cart
+        And Search product "<searched_product>" and add <searched_quantity> items to cart
         And Navigate to the cart
         Then Verify cart contains exactly the products added with correct name, quantity and price
 

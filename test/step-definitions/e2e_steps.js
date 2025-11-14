@@ -31,8 +31,7 @@ When('Navigate back to the category page', async () => {
     await attachScreenshot('Returned to Category Page');
 });
 
-When('Search product {string} and add {string} items to cart', async function (productName, quantityStr) {
-    const quantity = parseInt(quantityStr, 10);
+When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
     const searchedProduct = await HomePage.searchAndSelectProduct(productName);
 
     for (let i = 0; i < quantity; i++) {
