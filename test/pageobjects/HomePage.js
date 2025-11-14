@@ -94,6 +94,7 @@ class HomePage {
         };
     }
 
+
     // Navigation and actions
 
     async openApp() {
@@ -147,6 +148,7 @@ class HomePage {
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
+
     // Product handling
 
     async getFirstProductDetails() {
@@ -171,9 +173,10 @@ class HomePage {
         await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
     }
 
+    // Search
+
     async searchProduct(name) {
-        await ui5.userInteraction.fill(this.SEARCH_FIELD_SELECTOR, name);
-        await browser.keys('Enter');
+        await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
     }
 
     async selectSearchedProduct() {
