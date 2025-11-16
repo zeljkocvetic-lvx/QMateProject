@@ -1,40 +1,18 @@
 class HomePage {
     constructor() {
         // Selectors
-        this.PRODUCT_ITEM_SELECTOR = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Category",
-                metadata: "sap.m.ObjectListItem"
-            }
-        };
-
-        this.SEARCH_RESULT_SELECTOR = {
+        this.SEARCH_FIELD_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
-                metadata: "sap.m.ObjectListItem"
+                metadata: "sap.m.SearchField",
+                id: "*searchField"
             }
         };
 
-        this.ADD_TO_CART_BUTTON_SELECTOR = {
+        this.CATEGORY_ITEM_SELECTOR = {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Product",
-                metadata: "sap.m.Button",
-                text: [{ path: "i18n>addToCartShort" }]
-            }
-        };
-
-        this.CART_BUTTON_SELECTOR = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Product",
-                metadata: "sap.m.ToggleButton",
-                tooltip: [
-                    {
-                        model: "i18n",
-                        path: "toCartButtonTooltip",
-                        value: "Show Shopping Cart",
-                        type: "string"
-                    }
-                ]
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.StandardListItem"
             }
         };
 
@@ -54,14 +32,6 @@ class HomePage {
             }
         };
 
-        this.BACK_BUTTON_SELECTOR = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Category",
-                metadata: "sap.m.Button",
-                id: "*page-navButton"
-            }
-        };
-
         this.AVAILABILITY_CRITERION_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -78,11 +48,11 @@ class HomePage {
             }
         };
 
-        this.SEARCH_FIELD_SELECTOR = {
+        this.BACK_BUTTON_SELECTOR = {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Home",
-                metadata: "sap.m.SearchField",
-                id: "*searchField"
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*page-navButton"
             }
         };
     }
@@ -110,37 +80,6 @@ class HomePage {
         await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
     }
 
-    async goToCart() {
-        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
-    }
-
-    // Product handling
-    async addProductToCart() {
-        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
-    }
-
-    async clickCartButton() {
-        await this.addProductToCart();
-    }
-
-    async selectFirstProduct() {
-        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
-    }
-
-    async getFirstProductDetails() {
-        const name = await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0);
-        const price = parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0));
-        return { name, price, quantity: 1 };
-    }
-
-    async selectSearchedProduct() {
-        const name = await ui5.element.getPropertyValue(this.SEARCH_RESULT_SELECTOR, 'title', 0);
-        const price = parseFloat(await ui5.element.getPropertyValue(this.SEARCH_RESULT_SELECTOR, 'number', 0));
-        await ui5.userInteraction.click(this.SEARCH_RESULT_SELECTOR, 0);
-        return { name, price, quantity: 1 };
-    }
-
-    // Filtering
     async filterByAvailability() {
         await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
         await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
@@ -148,7 +87,6 @@ class HomePage {
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
-    // Search
     async searchProduct(name) {
         await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
     }

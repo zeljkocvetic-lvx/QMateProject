@@ -1,10 +1,10 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import HomePage from '../pageobjects/HomePage.js';
+import ProductPage from '../pageobjects/ProductPage.js';
 import CartPage from '../pageobjects/CartPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 Given('Open the app', async function () {
-    if (!this.cartProducts) this.cartProducts = [];
     this.clearProducts();
     await HomePage.openApp();
     await attachScreenshot('Home Page Opened');
@@ -21,9 +21,9 @@ When('Filter products by availability', async () => {
 });
 
 When('Add first filtered product to cart', async function () {
-    const firstProduct = await HomePage.getFirstProductDetails();
-    await HomePage.selectFirstProduct();
-    await HomePage.clickCartButton();
+    const firstProduct = await ProductPage.getFirstProductDetails();
+    await ProductPage.selectFirstProduct();
+    await ProductPage.clickCartButton();
 
     this.addProduct({ ...firstProduct, quantity: 1 });
     await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
@@ -35,12 +35,11 @@ When('Navigate back to the category page', async () => {
 });
 
 When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
-    // Use cleaned HomePage API
     await HomePage.searchProduct(productName);
-    const searchedProduct = await HomePage.selectSearchedProduct(); // returns { name, price }
+    const searchedProduct = await ProductPage.selectSearchedProduct();
 
     for (let i = 0; i < quantity; i++) {
-        await HomePage.clickCartButton();
+        await ProductPage.clickCartButton();
     }
 
     this.addProduct({ ...searchedProduct, quantity });
@@ -48,7 +47,7 @@ When('Search product {string} and add {int} items to cart', async function (prod
 });
 
 When('Navigate to the cart', async () => {
-    await HomePage.goToCart();
+    await ProductPage.goToCart();
     await attachScreenshot('Navigated to Cart');
 });
 
@@ -58,27 +57,19 @@ Then('Verify cart contains exactly the products added with correct name, quantit
 
     const expectedProducts = this.getProducts();
 
-    // Aggregate cart items by name + price
     const aggregatedCart = cartItems.reduce((acc, item) => {
         const key = `${item.name}-${item.price}`;
-        if (!acc[key]) {
-            acc[key] = { ...item };
-        } else {
-            acc[key].quantity += item.quantity;
-        }
+        if (!acc[key]) acc[key] = { ...item };
+        else acc[key].quantity += item.quantity;
         return acc;
     }, {});
 
-    // Check that all expected products exist
     expectedProducts.forEach(expected => {
-        const actual = cartItems.find(
-            item => item.name === expected.name && item.price === expected.price
-        );
+        const actual = cartItems.find(item => item.name === expected.name && item.price === expected.price);
         expect(actual).toBeDefined();
         expect(actual.quantity).toEqual(expected.quantity);
     });
 
     expect(Object.keys(aggregatedCart).length).toEqual(expectedProducts.length);
-
     await attachScreenshot('Final Cart Verification');
 });
