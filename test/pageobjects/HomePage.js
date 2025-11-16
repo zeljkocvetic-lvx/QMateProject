@@ -157,10 +157,6 @@ class HomePage {
         await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
     }
 
-    async searchAndSelectProduct(name) {
-        await this.searchProduct(name);
-        return await this.selectSearchedProduct();
-    }
 }
 
 export default new HomePage();

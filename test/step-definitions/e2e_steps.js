@@ -35,14 +35,17 @@ When('Navigate back to the category page', async () => {
 });
 
 When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
-    const searchedProduct = await HomePage.searchAndSelectProduct(productName);
+    await ui5.userInteraction.searchFor(HomePage.SEARCH_FIELD_SELECTOR, productName);
+
+    const product = await HomePage.getProductDetailsFromSelector(HomePage.SEARCH_RESULT_SELECTOR, 0);
+    await ui5.userInteraction.click(HomePage.SEARCH_RESULT_SELECTOR, 0);
 
     for (let i = 0; i < quantity; i++) {
         await HomePage.clickCartButton();
     }
 
-    this.addProduct({ ...searchedProduct, quantity });
-    await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
+    this.addProduct({ ...product, quantity });
+    await attachScreenshot(`Searched Product Added to Cart: ${product.name} x${quantity}`);
 });
 
 When('Navigate to the cart', async () => {
