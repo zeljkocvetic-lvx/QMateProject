@@ -3,7 +3,9 @@ import HomePage from '../pageobjects/HomePage.js';
 import CartPage from '../pageobjects/CartPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
-Given('Open the app', async () => {
+Given('Open the app', async function () {
+    if (!this.cartProducts) this.cartProducts = [];
+    this.clearProducts();
     await HomePage.openApp();
     await attachScreenshot('Home Page Opened');
 });
@@ -65,13 +67,22 @@ Then('Verify cart contains exactly the products added with correct name, quantit
         return acc;
     }, {});
 
-    // Verify all expected products exist and match
+    // Verify each expected product exists in the cart exactly
     expectedProducts.forEach(expected => {
         const key = `${expected.name}-${expected.price}`;
         const actual = aggregatedCart[key];
-        expect(actual).toBeDefined();
-        expect(actual).toEqual(expected);
+
+        if (!actual) {
+            throw new Error(`Product "${expected.name}" with price ${expected.price} is missing in cart`);
+        }
+
+        expect(actual.name).toEqual(expected.name);
+        expect(actual.price).toEqual(expected.price);
+        expect(actual.quantity).toEqual(expected.quantity);
     });
+
+    // Ensure cart does not contain extra items
+    expect(Object.keys(aggregatedCart).length).toEqual(expectedProducts.length);
 
     await attachScreenshot('Final Cart Verification');
 });
