@@ -86,23 +86,6 @@ class HomePage {
         };
     }
 
-    // General helpers
-    async clickElement(selector, index = 0) {
-        await ui5.assertion.expectToBeVisible(selector);
-        await ui5.userInteraction.click(selector, index);
-    }
-
-    async getProductDetailsFromSelector(selector, index = 0) {
-        return {
-            name: await ui5.element.getPropertyValue(selector, 'title', index),
-            price: parseFloat(await ui5.element.getPropertyValue(selector, 'number', index))
-        };
-    }
-
-    async addProductToCart() {
-        await this.clickElement(this.ADD_TO_CART_BUTTON_SELECTOR);
-    }
-
     // Navigation
     async openApp() {
         await common.navigation.navigateToUrl(
@@ -120,14 +103,6 @@ class HomePage {
             }
         };
         await ui5.userInteraction.click(selector);
-    }
-
-    async openFilterDialog() {
-        await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
-    }
-
-    async confirmFilterSelection() {
-        await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
     async goBackToCategory() {
@@ -152,23 +127,29 @@ class HomePage {
         return { ...details, quantity: 1 };
     }
 
-    async clickCartButton() {
-        await this.addProductToCart();
-    }
-
     async selectSearchedProduct() {
         const product = await this.getProductDetailsFromSelector(this.SEARCH_RESULT_SELECTOR, 0);
         await ui5.userInteraction.click(this.SEARCH_RESULT_SELECTOR, 0);
         return product;
     }
 
+    async clickCartButton() {
+        await this.addProductToCart();
+    }
+
+    async getProductDetailsFromSelector(selector, index = 0) {
+        return {
+            name: await ui5.element.getPropertyValue(selector, 'title', index),
+            price: parseFloat(await ui5.element.getPropertyValue(selector, 'number', index))
+        };
+    }
 
     // Filtering
     async filterByAvailability() {
-        await this.openFilterDialog();
-        await this.clickElement(this.AVAILABILITY_CRITERION_SELECTOR);
-        await this.clickElement(this.AVAILABILITY_OPTION_SELECTOR);
-        await this.confirmFilterSelection();
+        await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
+        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_SELECTOR);
+        await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
     // Search
