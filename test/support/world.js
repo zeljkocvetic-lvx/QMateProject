@@ -21,13 +21,9 @@ class CustomWorld {
         return [...this.cartProducts];
     }
 
-    clearProducts() {
-        this.cartProducts = [];
-    }
-
-    getProductByNameAndPrice(name, price) {
-        const product = this.cartProducts.find(p => p.name === name && p.price === price);
-        expect(product, `Product "${name}" with price ${price} should exist in world`).toBeDefined();
+    getProductByName(name) {
+        const product = this.cartProducts.find(p => p.name === name);
+        expect(product, `Product "${name}" should exist in world`).toBeDefined();
         return product;
     }
 }
