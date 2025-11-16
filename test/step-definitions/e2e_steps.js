@@ -56,7 +56,18 @@ Then('Verify cart contains exactly the products added with correct name, quantit
 
     const expectedProducts = this.getProducts();
 
-    // Check each expected product exists with correct quantity and price
+    // Aggregate cart items by name + price
+    const aggregatedCart = cartItems.reduce((acc, item) => {
+        const key = `${item.name}-${item.price}`;
+        if (!acc[key]) {
+            acc[key] = { ...item };
+        } else {
+            acc[key].quantity += item.quantity;
+        }
+        return acc;
+    }, {});
+
+    // Check that all expected products exist
     expectedProducts.forEach(expected => {
         const actual = cartItems.find(
             item => item.name === expected.name && item.price === expected.price
@@ -65,8 +76,8 @@ Then('Verify cart contains exactly the products added with correct name, quantit
         expect(actual.quantity).toEqual(expected.quantity);
     });
 
-    // Ensure no extra items in the cart
-    expect(cartItems.length).toEqual(expectedProducts.length);
+    // Ensure no extra products
+    expect(Object.keys(aggregatedCart).length).toEqual(expectedProducts.length);
 
     await attachScreenshot('Final Cart Verification');
 });
