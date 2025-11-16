@@ -119,44 +119,49 @@ class HomePage {
                 title: categoryName
             }
         };
-        await this.clickElement(selector);
+        await ui5.userInteraction.click(selector);
     }
 
     async openFilterDialog() {
-        await this.clickElement(this.FILTER_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
     }
 
     async confirmFilterSelection() {
-        await this.clickElement(this.OK_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
     async goBackToCategory() {
-        await this.clickElement(this.BACK_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
+    }
+
+    async goToCart() {
+        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
+    }
+
+    // Product handling
+    async addProductToCart() {
+        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
+    }
+
+    async selectFirstProduct() {
+        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
+    }
+
+    async getFirstProductDetails() {
+        const details = await this.getProductDetailsFromSelector(this.PRODUCT_ITEM_SELECTOR, 0);
+        return { ...details, quantity: 1 };
     }
 
     async clickCartButton() {
         await this.addProductToCart();
     }
 
-    async goToCart() {
-        await this.clickElement(this.CART_BUTTON_SELECTOR);
-    }
-
-    // Product handling
-    async getFirstProductDetails() {
-        const details = await this.getProductDetailsFromSelector(this.PRODUCT_ITEM_SELECTOR, 0);
-        return { ...details, quantity: 1 };
-    }
-
-    async selectFirstProduct() {
-        await this.clickElement(this.PRODUCT_ITEM_SELECTOR, 0);
-    }
-
     async selectSearchedProduct() {
         const product = await this.getProductDetailsFromSelector(this.SEARCH_RESULT_SELECTOR, 0);
-        await this.clickElement(this.SEARCH_RESULT_SELECTOR, 0);
+        await ui5.userInteraction.click(this.SEARCH_RESULT_SELECTOR, 0);
         return product;
     }
+
 
     // Filtering
     async filterByAvailability() {
