@@ -1,6 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import HomePage from '../pageobjects/HomePage.js';
-import CartPage from '../pageobjects/CheckoutPage.js';
+import CartPage from '../pageobjects/CartPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 Given('Open the app', async () => {
@@ -54,6 +54,7 @@ Then('Verify cart contains exactly the products added with correct name, quantit
 
     const expectedProducts = this.getProducts();
 
+    // Aggregate cart items by name + price
     const aggregatedCart = cartItems.reduce((acc, item) => {
         const key = `${item.name}-${item.price}`;
         if (!acc[key]) {
@@ -64,6 +65,7 @@ Then('Verify cart contains exactly the products added with correct name, quantit
         return acc;
     }, {});
 
+    // Verify all expected products exist and match
     expectedProducts.forEach(expected => {
         const key = `${expected.name}-${expected.price}`;
         const actual = aggregatedCart[key];

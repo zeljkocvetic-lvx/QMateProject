@@ -16,11 +16,8 @@ class CustomWorld {
     }
 
     getProducts() {
+        // Return a shallow copy to avoid external mutation of world state
         return [...this.cartProducts];
-    }
-
-    clearProducts() {
-        this.cartProducts = [];
     }
 }
 

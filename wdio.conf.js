@@ -268,7 +268,6 @@ export const config = {
     afterTest: async function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {
             const screenshot = await browser.takeScreenshot();
-            //addAttachment('Error Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
         }
     },
 
