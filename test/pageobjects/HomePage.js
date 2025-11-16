@@ -1,5 +1,6 @@
 class HomePage {
     constructor() {
+        // Selectors
         this.PRODUCT_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -118,30 +119,25 @@ class HomePage {
         await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
+    async clickCartButton() {
+        await this.addProductToCart();
+    }
+
     async selectFirstProduct() {
         await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
     }
 
     async getFirstProductDetails() {
-        const details = await this.getProductDetailsFromSelector(this.PRODUCT_ITEM_SELECTOR, 0);
-        return { ...details, quantity: 1 };
+        const name = await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'title', 0);
+        const price = parseFloat(await ui5.element.getPropertyValue(this.PRODUCT_ITEM_SELECTOR, 'number', 0));
+        return { name, price, quantity: 1 };
     }
 
     async selectSearchedProduct() {
-        const product = await this.getProductDetailsFromSelector(this.SEARCH_RESULT_SELECTOR, 0);
+        const name = await ui5.element.getPropertyValue(this.SEARCH_RESULT_SELECTOR, 'title', 0);
+        const price = parseFloat(await ui5.element.getPropertyValue(this.SEARCH_RESULT_SELECTOR, 'number', 0));
         await ui5.userInteraction.click(this.SEARCH_RESULT_SELECTOR, 0);
-        return product;
-    }
-
-    async clickCartButton() {
-        await this.addProductToCart();
-    }
-
-    async getProductDetailsFromSelector(selector, index = 0) {
-        return {
-            name: await ui5.element.getPropertyValue(selector, 'title', index),
-            price: parseFloat(await ui5.element.getPropertyValue(selector, 'number', index))
-        };
+        return { name, price, quantity: 1 };
     }
 
     // Filtering
@@ -156,7 +152,6 @@ class HomePage {
     async searchProduct(name) {
         await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
     }
-
 }
 
 export default new HomePage();

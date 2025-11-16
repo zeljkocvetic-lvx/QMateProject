@@ -35,17 +35,16 @@ When('Navigate back to the category page', async () => {
 });
 
 When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
-    await ui5.userInteraction.searchFor(HomePage.SEARCH_FIELD_SELECTOR, productName);
-
-    const product = await HomePage.getProductDetailsFromSelector(HomePage.SEARCH_RESULT_SELECTOR, 0);
-    await ui5.userInteraction.click(HomePage.SEARCH_RESULT_SELECTOR, 0);
+    // Use cleaned HomePage API
+    await HomePage.searchProduct(productName);
+    const searchedProduct = await HomePage.selectSearchedProduct(); // returns { name, price }
 
     for (let i = 0; i < quantity; i++) {
         await HomePage.clickCartButton();
     }
 
-    this.addProduct({ ...product, quantity });
-    await attachScreenshot(`Searched Product Added to Cart: ${product.name} x${quantity}`);
+    this.addProduct({ ...searchedProduct, quantity });
+    await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
 });
 
 When('Navigate to the cart', async () => {
@@ -79,7 +78,6 @@ Then('Verify cart contains exactly the products added with correct name, quantit
         expect(actual.quantity).toEqual(expected.quantity);
     });
 
-    // Ensure no extra products
     expect(Object.keys(aggregatedCart).length).toEqual(expectedProducts.length);
 
     await attachScreenshot('Final Cart Verification');
