@@ -23,14 +23,23 @@ class ProductPage {
                 ]
             }
         };
-    }
+        this.PRODUCT_NAME_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Product",
+                metadata: "sap.m.Title"
+            }
+        };
 
-    async addProductToCart() {
-        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
+        this.PRODUCT_PRICE_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Product",
+                metadata: "sap.m.ObjectNumber"
+            }
+        };
     }
 
     async clickCartButton() {
-        await this.addProductToCart();
+        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
     async goToCart() {
@@ -38,9 +47,16 @@ class ProductPage {
     }
 
     async getProductDetails() {
-        const name = await ui5.element.getPropertyValue({ viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.Title" }, 'text');
-        const price = parseFloat(await ui5.element.getPropertyValue({ viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.ObjectNumber" }, 'number'));
-        return { name, price, quantity: 1 };
+        const name = await ui5.element.getPropertyValue(this.PRODUCT_NAME_SELECTOR, "text");
+        const priceRaw = await ui5.element.getPropertyValue(this.PRODUCT_PRICE_SELECTOR, "number");
+
+        const price = parseFloat(priceRaw);
+
+        return {
+            name,
+            price,
+            quantity: 1
+        };
     }
 }
 
