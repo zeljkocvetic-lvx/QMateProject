@@ -21,12 +21,12 @@ When('Filter products by availability', async () => {
 });
 
 When('Add first filtered product to cart', async function () {
-    const firstProduct = await ProductPage.getFirstProductDetails();
-    await ProductPage.selectFirstProduct();
+    const productDetails = await HomePage.getFirstProductDetails();
+    await HomePage.selectFirstProduct();
     await ProductPage.clickCartButton();
 
-    this.addProduct && this.addProduct({ ...firstProduct, quantity: 1 });
-    await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
+    this.addProduct && this.addProduct({ ...productDetails, quantity: 1 });
+    await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
 });
 
 When('Navigate back to the category page', async () => {
@@ -36,14 +36,14 @@ When('Navigate back to the category page', async () => {
 
 When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
     await HomePage.searchProduct(productName);
-    const searchedProduct = await ProductPage.selectSearchedProduct();
+    const productDetails = await HomePage.selectSearchedProduct();
 
     for (let i = 0; i < quantity; i++) {
         await ProductPage.clickCartButton();
     }
 
-    this.addProduct && this.addProduct({ ...searchedProduct, quantity });
-    await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
+    this.addProduct && this.addProduct({ ...productDetails, quantity });
+    await attachScreenshot(`Searched Product Added to Cart: ${productDetails.name} x${quantity}`);
 });
 
 When('Navigate to the cart', async () => {
@@ -58,7 +58,6 @@ Then('Verify cart contains exactly the products added with correct name, quantit
     const expectedProducts = (this.getProducts && this.getProducts()) || [];
 
     const normalize = p => `${p.name}::${p.price}::${p.quantity}`;
-
     const actualSet = cartItems.map(normalize).sort();
     const expectedSet = expectedProducts.map(normalize).sort();
 
