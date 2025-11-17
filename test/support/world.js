@@ -9,7 +9,6 @@ class CustomWorld {
         const existing = this.cartProducts.find(p => p.name === product.name);
 
         if (existing) {
-            // quantity is incremented, price is assumed the same
             existing.quantity += product.quantity;
         } else {
             this.cartProducts.push({ ...product });
