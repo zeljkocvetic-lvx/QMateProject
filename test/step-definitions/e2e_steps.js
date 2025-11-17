@@ -5,7 +5,7 @@ import CartPage from '../pageobjects/CartPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 Given('Open the app', async function () {
-    this.clearProducts();
+    this.clearProducts && this.clearProducts();
     await HomePage.openApp();
     await attachScreenshot('Home Page Opened');
 });
@@ -25,7 +25,7 @@ When('Add first filtered product to cart', async function () {
     await ProductPage.selectFirstProduct();
     await ProductPage.clickCartButton();
 
-    this.addProduct({ ...firstProduct, quantity: 1 });
+    this.addProduct && this.addProduct({ ...firstProduct, quantity: 1 });
     await attachScreenshot(`First Product Added to Cart: ${firstProduct.name}`);
 });
 
@@ -42,7 +42,7 @@ When('Search product {string} and add {int} items to cart', async function (prod
         await ProductPage.clickCartButton();
     }
 
-    this.addProduct({ ...searchedProduct, quantity });
+    this.addProduct && this.addProduct({ ...searchedProduct, quantity });
     await attachScreenshot(`Searched Product Added to Cart: ${searchedProduct.name} x${quantity}`);
 });
 
@@ -55,21 +55,14 @@ Then('Verify cart contains exactly the products added with correct name, quantit
     const cartItems = await CartPage.getCartItems();
     await attachScreenshot('Cart Items Retrieved');
 
-    const expectedProducts = this.getProducts();
+    const expectedProducts = (this.getProducts && this.getProducts()) || [];
 
-    const aggregatedCart = cartItems.reduce((acc, item) => {
-        const key = `${item.name}-${item.price}`;
-        if (!acc[key]) acc[key] = { ...item };
-        else acc[key].quantity += item.quantity;
-        return acc;
-    }, {});
+    const normalize = p => `${p.name}::${p.price}::${p.quantity}`;
 
-    expectedProducts.forEach(expected => {
-        const actual = cartItems.find(item => item.name === expected.name && item.price === expected.price);
-        expect(actual).toBeDefined();
-        expect(actual.quantity).toEqual(expected.quantity);
-    });
+    const actualSet = cartItems.map(normalize).sort();
+    const expectedSet = expectedProducts.map(normalize).sort();
 
-    expect(Object.keys(aggregatedCart).length).toEqual(expectedProducts.length);
+    expect(actualSet).toEqual(expectedSet);
+
     await attachScreenshot('Final Cart Verification');
 });
