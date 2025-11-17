@@ -69,6 +69,14 @@ class HomePage {
                 metadata: "sap.m.ObjectListItem"
             }
         };
+
+        this.CATEGORY_BY_NAME_SELECTOR = (categoryName) => ({
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.StandardListItem",
+                title: categoryName
+            }
+        });
     }
 
     // Navigation
@@ -80,13 +88,7 @@ class HomePage {
     }
 
     async selectCategoryByName(categoryName) {
-        const selector = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Home",
-                metadata: "sap.m.StandardListItem",
-                title: categoryName
-            }
-        };
+        const selector = this.CATEGORY_BY_NAME_SELECTOR(categoryName);
         await ui5.userInteraction.click(selector);
     }
 
