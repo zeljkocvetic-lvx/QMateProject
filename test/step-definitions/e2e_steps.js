@@ -47,7 +47,7 @@ When('Search product {string} and add {int} items to cart', async function (prod
 });
 
 When('Navigate to the cart', async () => {
-    await ProductPage.goToCart();
+    await ProductPage.clickCartButton();
     await attachScreenshot('Navigated to Cart');
 });
 

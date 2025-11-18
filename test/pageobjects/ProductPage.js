@@ -55,7 +55,7 @@ class ProductPage {
         await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
-    async goToCart() {
+    async clickCartButton() {
         await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
     }
 }
