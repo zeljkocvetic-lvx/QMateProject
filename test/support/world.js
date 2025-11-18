@@ -1,24 +1,20 @@
+// world.js
 import { setWorldConstructor } from '@cucumber/cucumber';
 
 class CustomWorld {
     constructor() {
-        this.cartProducts = [];
+        this.addedProducts = [];
     }
 
-    addProduct(product) {
-        const existing = this.cartProducts.find(p => p.name === product.name);
-
-        if (existing) {
-            existing.quantity += product.quantity;
-        } else {
-            this.cartProducts.push({ ...product });
-        }
+    addProductToStorage(product) {
+        const existing = this.addedProducts.find(p => p.name === product.name);
+        if (existing) existing.quantity += product.quantity;
+        else this.addedProducts.push({ ...product });
     }
 
-    getProducts() {
-        return [...this.cartProducts];
+    getStoredProducts() {
+        return [...this.addedProducts];
     }
-
 }
 
 setWorldConstructor(CustomWorld);

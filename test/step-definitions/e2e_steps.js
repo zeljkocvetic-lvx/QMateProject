@@ -5,7 +5,6 @@ import CartPage from '../pageobjects/CartPage.js';
 import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
 Given('Open the app', async function () {
-    this.clearProducts && this.clearProducts();
     await HomePage.openApp();
     await attachScreenshot('Home Page Opened');
 });
@@ -21,11 +20,11 @@ When('Filter products by availability', async () => {
 });
 
 When('Add first filtered product to cart', async function () {
-    const productDetails = await HomePage.getFirstProductDetails();
-    await HomePage.selectFirstProduct();
-    await ProductPage.clickCartButton();
+    await HomePage.openFirstProduct();
 
-    this.addProduct && this.addProduct({ ...productDetails, quantity: 1 });
+    const productDetails = await ProductPage.getProductDetails();
+    await ProductPage.clickCartButton();
+    this.addProductToStorage(productDetails);
     await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
 });
 
@@ -36,13 +35,14 @@ When('Navigate back to the category page', async () => {
 
 When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
     await HomePage.searchProduct(productName);
-    const productDetails = await HomePage.selectSearchedProduct();
+    await HomePage.openFirstSearchResult();
 
+    const productDetails = await ProductPage.getProductDetails(quantity);
     for (let i = 0; i < quantity; i++) {
         await ProductPage.clickCartButton();
     }
 
-    this.addProduct && this.addProduct({ ...productDetails, quantity });
+    this.addProductToStorage(productDetails);
     await attachScreenshot(`Searched Product Added to Cart: ${productDetails.name} x${quantity}`);
 });
 
@@ -55,13 +55,9 @@ Then('Verify cart contains exactly the products added with correct name, quantit
     const cartItems = await CartPage.getCartItems();
     await attachScreenshot('Cart Items Retrieved');
 
-    const expectedProducts = (this.getProducts && this.getProducts()) || [];
-
+    const expectedProducts = this.getStoredProducts();
     const normalize = p => `${p.name}::${p.price}::${p.quantity}`;
-    const actualSet = cartItems.map(normalize).sort();
-    const expectedSet = expectedProducts.map(normalize).sort();
-
-    expect(actualSet).toEqual(expectedSet);
+    expect(cartItems.map(normalize).sort()).toEqual(expectedProducts.map(normalize).sort());
 
     await attachScreenshot('Final Cart Verification');
 });
