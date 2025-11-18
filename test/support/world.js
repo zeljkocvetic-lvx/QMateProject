@@ -1,4 +1,3 @@
-// world.js
 import { setWorldConstructor } from '@cucumber/cucumber';
 
 class CustomWorld {

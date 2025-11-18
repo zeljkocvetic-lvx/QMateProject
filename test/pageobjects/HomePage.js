@@ -8,13 +8,6 @@ class HomePage {
                 id: "*searchField"
             }
         };
-        this.CATEGORY_BY_NAME_SELECTOR = (categoryName) => ({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Home",
-                metadata: "sap.m.StandardListItem",
-                title: categoryName
-            }
-        });
         this.PRODUCT_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
@@ -73,8 +66,18 @@ class HomePage {
         await ui5.assertion.expectToBeVisible(this.SEARCH_FIELD_SELECTOR);
     }
 
+    getCategorySelector(categoryName) {
+        return {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.StandardListItem",
+                title: categoryName
+            }
+        };
+    }
+
     async selectCategoryByName(categoryName) {
-        const selector = this.CATEGORY_BY_NAME_SELECTOR(categoryName);
+        const selector = this.getCategorySelector(categoryName);
         await ui5.userInteraction.click(selector);
     }
 
