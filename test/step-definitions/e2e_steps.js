@@ -23,7 +23,7 @@ When('Add first filtered product to cart', async function () {
     await HomePage.openFirstProduct();
 
     const productDetails = await ProductPage.getProductDetails();
-    await ProductPage.clickCartButton();
+    await ProductPage.clickAddToCartButton();
     this.addProductToStorage(productDetails);
     await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
 });
@@ -39,7 +39,7 @@ When('Search product {string} and add {int} items to cart', async function (prod
 
     const productDetails = await ProductPage.getProductDetails(quantity);
     for (let i = 0; i < quantity; i++) {
-        await ProductPage.clickCartButton();
+        await ProductPage.clickAddToCartButton();
     }
 
     this.addProductToStorage(productDetails);

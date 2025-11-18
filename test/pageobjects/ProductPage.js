@@ -51,7 +51,7 @@ class ProductPage {
         return { name, price, quantity };
     }
 
-    async clickCartButton() {
+    async clickAddToCartButton() {
         await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
