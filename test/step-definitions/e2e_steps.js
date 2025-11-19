@@ -27,6 +27,7 @@ When('Add first filtered product to cart', async function () {
     this.addProductToStorage(productDetails);
 
     await ProductPage.clickAddToCartButton();
+
     await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
 });
 
