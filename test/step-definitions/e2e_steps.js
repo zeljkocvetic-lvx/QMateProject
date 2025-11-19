@@ -21,12 +21,12 @@ When('Filter products by availability', async () => {
 
 When('Add first filtered product to cart', async function () {
     await HomePage.openFirstProduct();
+
     const productDetails = await ProductPage.getProductDetails();
     productDetails.quantity = 1;
-
-    await ProductPage.clickAddToCartButton();
     this.addProductToStorage(productDetails);
 
+    await ProductPage.clickAddToCartButton();
     await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
 });
 
@@ -41,12 +41,11 @@ When('Search product {string} and add {int} items to cart', async function (prod
 
     const productDetails = await ProductPage.getProductDetails();
     productDetails.quantity = quantity;
+    this.addProductToStorage(productDetails);
 
     for (let i = 0; i < quantity; i++) {
         await ProductPage.clickAddToCartButton();
     }
-
-    this.addProductToStorage(productDetails);
 
     await attachScreenshot(`Searched Product Added to Cart: ${productDetails.name} x${quantity}`);
 });
