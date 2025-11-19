@@ -48,7 +48,7 @@ class ProductPage {
     async getProductDetails() {
         const name = await this.getProductName();
         const price = await this.getProductPrice();
-        return { name, price, quantity: 1 };
+        return { name, price };
     }
 
     async clickAddToCartButton() {

@@ -24,6 +24,7 @@ When('Add first filtered product to cart', async function () {
 
     const productDetails = await ProductPage.getProductDetails();
     await ProductPage.clickAddToCartButton();
+    productDetails.quantity = 1;
     this.addProductToStorage(productDetails);
     await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
 });
@@ -36,8 +37,8 @@ When('Navigate back to the category page', async () => {
 When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
     await HomePage.searchProduct(productName);
     await HomePage.openFirstSearchResult();
-
     const productDetails = await ProductPage.getProductDetails();
+
     for (let i = 0; i < quantity; i++) {
         await ProductPage.clickAddToCartButton();
     }
