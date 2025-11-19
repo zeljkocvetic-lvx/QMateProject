@@ -53,11 +53,15 @@ When('Navigate to the cart', async () => {
 
 Then('Verify cart contains exactly the products added with correct name, quantity and price', async function () {
     const cartItems = await CartPage.getCartItems();
+
     await attachScreenshot('Cart Items Retrieved');
 
-    const expectedProducts = this.getStoredProducts();
-    const normalize = p => `${p.name}::${p.price}::${p.quantity}`;
-    expect(cartItems.map(normalize).sort()).toEqual(expectedProducts.map(normalize).sort());
+    const storedProducts = this.getStoredProducts();
+    const formatProductForComparison = product => `${product.name}::${product.price}::${product.quantity}`;
+    const actualCartProducts = cartItems.map(formatProductForComparison).sort();
+    const expectedCartProducts = storedProducts.map(formatProductForComparison).sort();
+
+    await common.assertion.expectEqual(actualCartProducts, expectedCartProducts, 'Cart contents match the added products');
 
     await attachScreenshot('Final Cart Verification');
 });
