@@ -45,10 +45,10 @@ class ProductPage {
         return parseFloat(priceRaw);
     }
 
-    async getProductDetails(quantity = 1) {
+    async getProductDetails() {
         const name = await this.getProductName();
         const price = await this.getProductPrice();
-        return { name, price, quantity };
+        return { name, price, quantity: 1 };
     }
 
     async clickAddToCartButton() {

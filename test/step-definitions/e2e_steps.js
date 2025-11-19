@@ -37,12 +37,14 @@ When('Search product {string} and add {int} items to cart', async function (prod
     await HomePage.searchProduct(productName);
     await HomePage.openFirstSearchResult();
 
-    const productDetails = await ProductPage.getProductDetails(quantity);
+    const productDetails = await ProductPage.getProductDetails();
     for (let i = 0; i < quantity; i++) {
         await ProductPage.clickAddToCartButton();
     }
 
+    productDetails.quantity = quantity;
     this.addProductToStorage(productDetails);
+
     await attachScreenshot(`Searched Product Added to Cart: ${productDetails.name} x${quantity}`);
 });
 
