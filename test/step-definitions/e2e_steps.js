@@ -66,7 +66,6 @@ Then('Verify cart contains exactly the products added with correct name, quantit
     const actualCartProducts = cartItems.map(formatProductForComparison).sort();
     const expectedCartProducts = storedProducts.map(formatProductForComparison).sort();
 
-    await common.assertion.expectEqual(actualCartProducts, expectedCartProducts, 'Cart contents match the added products');
-
+    await common.assertion.expectEqual(actualCartProducts, expectedCartProducts);
     await attachScreenshot('Final Cart Verification');
 });
