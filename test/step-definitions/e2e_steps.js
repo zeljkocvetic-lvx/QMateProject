@@ -1,53 +1,71 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import HomePage from '../pageobjects/HomePage.js';
+import ProductPage from '../pageobjects/ProductPage.js';
 import CartPage from '../pageobjects/CartPage.js';
-import CheckoutPage from '../pageobjects/CheckoutPage.js';
+import { attachScreenshot } from '../helpers/screenshotHelper.js';
 
-Given('I open the app', async () => {
+Given('Open the app', async function () {
     await HomePage.openApp();
+    await attachScreenshot('Home Page Opened');
 });
 
-When('I add the first promoted item to the cart and proceed to checkout', async () => {
-    await HomePage.addFirstPromotedItem();
-    await HomePage.openCartFromWelcome();
-    await CartPage.proceedToCheckout();
+When('Select category {string}', async (categoryName) => {
+    await HomePage.selectCategoryByName(categoryName);
+    await attachScreenshot(`Category "${categoryName}" Selected`);
 });
 
-When('I go to the payment step', async () => {
-    await CheckoutPage.clickStep2Next();
-    await CheckoutPage.clickStep3Payment();
+When('Filter products by availability', async () => {
+    await HomePage.filterByAvailability();
+    await attachScreenshot('Products Filtered by Availability');
 });
 
-When(
-    'I fill credit card details with holder {string}, number {string}, CVV {string} and expiration {string}',
-    async (holder, number, cvv, expiration) => {
-        await ui5.assertion.expectToBeVisible(CheckoutPage.cardHolderInput);
-        await CheckoutPage.enterCardHolderName(holder);
-        await CheckoutPage.enterCardNumber(number);
-        await CheckoutPage.enterCVV(cvv);
-        await CheckoutPage.enterExpirationDate(expiration);
-        await CheckoutPage.closeDatePicker();
-        await CheckoutPage.clickStep4Next();
+When('Add first filtered product to cart', async function () {
+    await HomePage.openFirstProduct();
+
+    const productDetails = await ProductPage.getProductDetails();
+    productDetails.quantity = 1;
+    this.addProductToStorage(productDetails);
+
+    await ProductPage.clickAddToCartButton();
+
+    await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
+});
+
+When('Navigate back to the category page', async () => {
+    await HomePage.goBackToCategory();
+    await attachScreenshot('Returned to Category Page');
+});
+
+When('Search product {string} and add {int} items to cart', async function (productName, quantity) {
+    await HomePage.searchProduct(productName);
+    await HomePage.openFirstSearchResult();
+
+    const productDetails = await ProductPage.getProductDetails();
+    productDetails.quantity = quantity;
+    this.addProductToStorage(productDetails);
+
+    for (let i = 0; i < quantity; i++) {
+        await ProductPage.clickAddToCartButton();
     }
-);
 
-When(
-    'I fill delivery address with {string}, {string}, {string}, {string}',
-    async (address, city, zip, country) => {
-        await CheckoutPage.enterAddress(address);
-        await CheckoutPage.enterCity(city);
-        await CheckoutPage.enterZip(zip);
-        await CheckoutPage.enterCountry(country);
-        await CheckoutPage.blurField();
-        await CheckoutPage.clickStep5Next();
-    }
-);
-
-When('I submit the order', async () => {
-    await CheckoutPage.clickOrderSummaryNext();
-    await CheckoutPage.submitOrder();
+    await attachScreenshot(`Searched Product Added to Cart: ${productDetails.name} x${quantity}`);
 });
 
-Then('I should see the order submitted successfully', async () => {
-    await CheckoutPage.verifyOrderSuccess();
+When('Navigate to the cart', async () => {
+    await ProductPage.clickCartButton();
+    await attachScreenshot('Navigated to Cart');
+});
+
+Then('Verify cart contains exactly the products added with correct name, quantity and price', async function () {
+    const cartItems = await CartPage.getCartItems();
+
+    await attachScreenshot('Cart Items Retrieved');
+
+    const storedProducts = this.getStoredProducts();
+    const formatProductForComparison = product => `${product.name}::${product.price}::${product.quantity}`;
+    const actualCartProducts = cartItems.map(formatProductForComparison).sort();
+    const expectedCartProducts = storedProducts.map(formatProductForComparison).sort();
+
+    await common.assertion.expectEqual(actualCartProducts, expectedCartProducts);
+    await attachScreenshot('Final Cart Verification');
 });

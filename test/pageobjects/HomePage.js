@@ -1,84 +1,108 @@
-import { attachScreenshot } from '../helpers/screenshotHelper.js';
-
 class HomePage {
-
-    async openApp() {
-        await browser.url(
-            'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
-        );
-        await attachScreenshot('Home Page Opened');
-    }
-
-    async addFirstPromotedItem() {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Welcome",
-                metadata: "sap.m.Button",
-                bindingContextPath: "/Promoted/0"
-            }
-        });
-        await attachScreenshot('First Promoted Item Added');
-    }
-
-    async selectCategory(categoryCode) {
-        await ui5.userInteraction.click({
+    constructor() {
+        // Search / category selectors
+        this.SEARCH_FIELD_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
-                metadata: "sap.m.StandardListItem",
-                bindingContextPath: `/ProductCategories*'${categoryCode}')`
+                metadata: "sap.m.SearchField",
+                id: "*searchField"
             }
-        });
-        await attachScreenshot(`Category ${categoryCode} Selected`);
-    }
-
-    async selectFirstProductInCategory() {
-        await ui5.userInteraction.click({
+        };
+        this.PRODUCT_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Category",
                 metadata: "sap.m.ObjectListItem"
-            },
-            index: 0
-        });
-        await attachScreenshot('First Product in Category Selected');
-    }
-
-    async addProductToCart() {
-        await ui5.userInteraction.click({
+            }
+        };
+        this.SEARCH_RESULT_SELECTOR = {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Product",
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.ObjectListItem"
+            }
+        };
+
+        // Filters and navigation
+        this.FILTER_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
                 metadata: "sap.m.Button",
-                text: [
-                    { path: "i18n>addToCartShort" }
-                ]
+                id: "*masterListFilterButton"
             }
-        });
-        await attachScreenshot('Product Added to Cart');
-    }
-
-    async addProductMultipleTimes(count) {
-        for (let i = 0; i < count; i++) {
-            await this.addProductToCart();
-        }
-    }
-
-    async openCartFromWelcome() {
-        await ui5.userInteraction.click({
+        };
+        this.AVAILABILITY_CRITERION_SELECTOR = {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Welcome",
-                metadata: "sap.m.ToggleButton"
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: "Availability"
             }
-        });
-        await attachScreenshot('Cart Opened from Welcome Page');
+        };
+        this.AVAILABILITY_OPTION_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.StandardListItem",
+                title: "Available"
+            }
+        };
+        this.OK_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*categoryFilterDialog-acceptbutton"
+            }
+        };
+        this.BACK_BUTTON_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Category",
+                metadata: "sap.m.Button",
+                id: "*page-navButton"
+            }
+        };
     }
 
-    async openCartFromProductPage() {
-        await ui5.userInteraction.click({
+    async openApp() {
+        await common.navigation.navigateToUrl(
+            'https://sapui5.hana.ondemand.com/test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon'
+        );
+        await ui5.assertion.expectToBeVisible(this.SEARCH_FIELD_SELECTOR);
+    }
+
+    getCategorySelector(categoryName) {
+        return {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Product",
-                metadata: "sap.m.ToggleButton"
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.StandardListItem",
+                title: categoryName
             }
-        });
-        await attachScreenshot('Cart Opened from Product Page');
+        };
+    }
+
+    async selectCategoryByName(categoryName) {
+        const selector = this.getCategorySelector(categoryName);
+        await ui5.userInteraction.click(selector);
+    }
+
+    async goBackToCategory() {
+        await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
+    }
+
+    async filterByAvailability() {
+        await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
+        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_SELECTOR);
+        await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
+    }
+
+    async searchProduct(name) {
+        await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
+    }
+
+    // Product list navigation
+    async openFirstProduct() {
+        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
+    }
+
+    async openFirstSearchResult() {
+        await ui5.userInteraction.click(this.SEARCH_RESULT_SELECTOR, 0);
     }
 }
 

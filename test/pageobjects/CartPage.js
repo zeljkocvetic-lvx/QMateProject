@@ -1,61 +1,38 @@
 class CartPage {
     constructor() {
-        this.proceedButton = {
+        this.CART_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Cart",
-                metadata: "sap.m.Button",
-                text: "Proceed"
+                metadata: "sap.m.ObjectListItem"
             }
         };
 
-        this.productTextBase = {
+        this.CART_BUTTON_SELECTOR = {
             elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Cart",
-                metadata: "sap.m.Text"
+                viewName: "sap.ui.demo.cart.view.Home",
+                metadata: "sap.m.ToggleButton"
             }
         };
-
-        this.productQuantityBase = {
-            elementProperties: {
-                viewName: "sap.ui.demo.cart.view.Cart",
-                metadata: "sap.m.StepInput"
-            },
-            propertyName: "value"
-        };
     }
 
-    async proceedToCheckout() {
-        await ui5.userInteraction.click(this.proceedButton);
+    async openCart() {
+        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
     }
 
-    async clickProductByBindingPath(bindingContextPath) {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                ...this.productTextBase.elementProperties,
-                bindingContextPath
-            }
-        });
-    }
+    async getCartItems() {
+        const elements = await ui5.element.getAllDisplayed(this.CART_ITEM_SELECTOR);
+        const items = [];
 
-    async verifyProductQuantityByBindingPath(bindingContextPath, expectedQuantity) {
-        const quantity = await ui5.control.getProperty({
-            elementProperties: {
-                ...this.productQuantityBase.elementProperties,
-                bindingContextPath
-            },
-            propertyName: this.productQuantityBase.propertyName
-        });
+        for (let i = 0; i < elements.length; i++) {
+            const product = {
+                name: await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'title', i),
+                quantity: parseInt(await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'intro', i)),
+                price: parseFloat(await ui5.element.getPropertyValue(this.CART_ITEM_SELECTOR, 'number', i))
+            };
+            items.push(product);
+        }
 
-        await ui5.assertion.expect(quantity).toEqual(expectedQuantity);
-    }
-
-    async clickFirstProduct() {
-        await ui5.userInteraction.click({
-            elementProperties: {
-                ...this.productTextBase.elementProperties
-            },
-            index: 0
-        });
+        return items;
     }
 }
 
