@@ -7,6 +7,7 @@ import { CustomWorld, StoredProduct } from '../support/world.ts';
 
 Given('Open the app', async function (this: CustomWorld) {
     await HomePage.openApp();
+    await HomePage.waitForPageLoaded();
     await attachScreenshot('Home Page Opened');
 });
 
@@ -22,6 +23,7 @@ When('Filter products by availability', async function (this: CustomWorld) {
 
 When('Add first filtered product to cart', async function (this: CustomWorld) {
     await HomePage.openFirstProduct();
+    await ProductPage.waitForPageLoaded();
 
     const productDetails = await ProductPage.getProductDetails();
     const stored: StoredProduct = {
@@ -38,6 +40,7 @@ When('Add first filtered product to cart', async function (this: CustomWorld) {
 
 When('Navigate back to the category page', async function (this: CustomWorld) {
     await HomePage.goBackToCategory();
+    await HomePage.waitForPageLoaded();
     await attachScreenshot('Returned to Category Page');
 });
 

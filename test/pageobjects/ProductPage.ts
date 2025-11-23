@@ -1,3 +1,5 @@
+import { BasePage } from './BasePage.ts';
+
 export interface ProductDetails {
     name: string;
     price: number;
@@ -63,6 +65,10 @@ class ProductPage {
 
     async clickCartButton(): Promise<void> {
         await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
+    }
+
+    async waitForPageLoaded(): Promise<void> {
+        await ui5.element.getDisplayed(this.PRODUCT_NAME_SELECTOR);
     }
 }
 
