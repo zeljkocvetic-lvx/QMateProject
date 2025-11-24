@@ -1,10 +1,14 @@
 import { CartItem } from '../support/types.ts';
+import { BasePage } from './BasePage.ts';
 
-class CartPage {
+class CartPage extends BasePage {
     CART_ITEM_SELECTOR: any;
     CART_BUTTON_SELECTOR: any;
+    CART_PAGE_TITLE_SELECTOR: any;
 
     constructor() {
+        super();
+
         this.CART_ITEM_SELECTOR = {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Cart",
@@ -16,6 +20,14 @@ class CartPage {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
                 metadata: "sap.m.ToggleButton"
+            }
+        };
+
+        this.CART_PAGE_TITLE_SELECTOR = {
+            elementProperties: {
+                viewName: "sap.ui.demo.cart.view.Cart",
+                metadata: "sap.m.Title",
+                id: "*page-title"
             }
         };
     }
@@ -38,6 +50,10 @@ class CartPage {
         }
 
         return items;
+    }
+
+    async waitForPageLoaded(): Promise<void> {
+        await ui5.element.getDisplayed(this.CART_PAGE_TITLE_SELECTOR);
     }
 }
 

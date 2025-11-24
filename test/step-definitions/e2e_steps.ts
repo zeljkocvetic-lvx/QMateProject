@@ -67,6 +67,7 @@ When('Search product {string} and add {int} items to cart', async function (this
 
 When('Navigate to the cart', async function (this: CustomWorld) {
     await ProductPage.clickCartButton();
+    await CartPage.waitForPageLoaded();
     await attachScreenshot('Navigated to Cart');
 });
 
