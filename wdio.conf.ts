@@ -133,6 +133,7 @@ export const config: WebdriverIO.Config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
+
     reporters: [['allure', {
         outputDir: 'allure-results',
         disableWebdriverStepsReporting: true,
@@ -252,8 +253,29 @@ export const config: WebdriverIO.Config = {
      * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
      * @param {object}                 context  Cucumber World object
      */
-    // beforeScenario: function (world, context) {
+
+    beforeScenario: async function (world: any) {
+        const allure = require('@wdio/allure-reporter').default;
+
+        allure.addFeature(world.pickle.name);
+
+        world.pickle.parameters.forEach((param: any) => {
+            allure.addParameter(param.name, param.value);
+        });
+    },
+
+    // beforeScenario: async function (world: any) {
+    //     const allure = require('@wdio/allure-reporter').default;
+
+    //     allure.addFeature(world.pickle.name);
+
+    //     if (world.pickle.parameters) {
+    //         world.pickle.parameters.forEach((param: any) => {
+    //             allure.addParameter(param.name, param.value);
+    //         });
+    //     }
     // },
+
     /**
      *
      * Runs before a Cucumber Step.
@@ -299,8 +321,13 @@ export const config: WebdriverIO.Config = {
      * @param {string}                   uri      path to feature file
      * @param {GherkinDocument.IFeature} feature  Cucumber feature object
      */
-    // afterFeature: function (uri, feature) {
-    // },
+
+
+    afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+        if (!passed) {
+            const screenshot = await browser.takeScreenshot();
+        }
+    },
 
     /**
      * Runs after a WebdriverIO command gets executed
