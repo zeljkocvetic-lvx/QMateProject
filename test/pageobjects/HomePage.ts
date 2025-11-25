@@ -42,7 +42,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    private readonly AVAILABILITY_OPTION_SELECTOR: QmateSelector = {
+    private readonly AVAILABILITY_OPTION_AVAILABLE_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.StandardListItem",
@@ -99,7 +99,7 @@ export class HomePage extends BasePage {
     async filterByAvailability(): Promise<void> {
         await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
         await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
-        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_SELECTOR);
+        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_AVAILABLE_SELECTOR);
         await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
     }
 
