@@ -1,7 +1,9 @@
 import type { Product } from '../support/productInterface.ts';
 import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
+import { BasePage } from './BasePage.ts';
 
-class ProductPage {
+class ProductPage extends BasePage {
+
     private static readonly PRODUCT_NAME_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Product",
