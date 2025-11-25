@@ -3,7 +3,6 @@ import HomePage from '../pageobjects/HomePage.ts';
 import ProductPage from '../pageobjects/ProductPage.ts';
 import CartPage from '../pageobjects/CartPage.ts';
 import { attachScreenshot } from '../helpers/screenshotHelper.ts';
-import { CustomWorld } from '../support/world.ts';
 import type { StoredProduct } from '../support/interfaces.ts';
 
 
@@ -12,17 +11,17 @@ Given('Open the app', async function () {
     await attachScreenshot('Home Page Opened');
 });
 
-When('Select category {string}', async function (this: CustomWorld, categoryName: string) {
+When('Select category {string}', async function (categoryName: string) {
     await HomePage.selectCategoryByName(categoryName);
     await attachScreenshot(`Category "${categoryName}" Selected`);
 });
 
-When('Filter products by availability', async function (this: CustomWorld) {
+When('Filter products by availability', async function () {
     await HomePage.filterByAvailability();
     await attachScreenshot('Products Filtered by Availability');
 });
 
-When('Add first filtered product to cart', async function (this: CustomWorld) {
+When('Add first filtered product to cart', async function () {
     await HomePage.openFirstProduct();
     await ProductPage.waitForPageLoaded();
 
@@ -39,13 +38,13 @@ When('Add first filtered product to cart', async function (this: CustomWorld) {
     await attachScreenshot(`First Product Added to Cart: ${productDetails.name}`);
 });
 
-When('Navigate back to the category page', async function (this: CustomWorld) {
+When('Navigate back to the category page', async function () {
     await HomePage.goBackToCategory();
     await HomePage.waitForPageLoaded();
     await attachScreenshot('Returned to Category Page');
 });
 
-When('Search product {string} and add {int} items to cart', async function (this: CustomWorld, productName: string, quantity: number) {
+When('Search product {string} and add {int} items to cart', async function (productName: string, quantity: number) {
     await HomePage.searchProduct(productName);
     await HomePage.openFirstSearchResult();
 
@@ -66,13 +65,13 @@ When('Search product {string} and add {int} items to cart', async function (this
     await attachScreenshot(`Searched Product Added to Cart: ${productDetails.name} x${quantity}`);
 });
 
-When('Navigate to the cart', async function (this: CustomWorld) {
+When('Navigate to the cart', async function () {
     await ProductPage.clickCartButton();
     await CartPage.waitForPageLoaded();
     await attachScreenshot('Navigated to Cart');
 });
 
-Then('Verify cart contains exactly the products added with correct name, quantity and price', async function (this: CustomWorld) {
+Then('Verify cart contains exactly the products added with correct name, quantity and price', async function () {
     const cartItems = await CartPage.getCartItems() as StoredProduct[];
 
     const storedProducts = this.getStoredProducts();
