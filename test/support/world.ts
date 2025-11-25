@@ -1,6 +1,7 @@
 import { setWorldConstructor } from '@cucumber/cucumber';
 import type { StoredProduct } from './types.ts';
 
+
 export class CustomWorld {
     private addedProducts: StoredProduct[];
 

@@ -9,7 +9,6 @@ import type { StoredProduct } from '../support/types.ts';
 
 Given('Open the app', async function () {
     await HomePage.openApp();
-    await HomePage.waitForPageLoaded();
     await attachScreenshot('Home Page Opened');
 });
 
