@@ -3,35 +3,65 @@ import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
 export class HomePage extends BasePage {
     private static readonly SEARCH_FIELD_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.SearchField", id: "*searchField" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Home",
+            metadata: "sap.m.SearchField",
+            id: "*searchField"
+        }
     };
 
     private static readonly PRODUCT_ITEM_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.ObjectListItem" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.ObjectListItem"
+        }
     };
 
     private static readonly SEARCH_RESULT_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ObjectListItem" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Home",
+            metadata: "sap.m.ObjectListItem"
+        }
     };
 
     private static readonly FILTER_BUTTON_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.Button", id: "*masterListFilterButton" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.Button",
+            id: "*masterListFilterButton"
+        }
     };
 
     private static readonly AVAILABILITY_CRITERION_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.StandardListItem", title: "Availability" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.StandardListItem",
+            title: "Availability"
+        }
     };
 
     private static readonly AVAILABILITY_OPTION_AVAILABLE_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.StandardListItem", title: "Available" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.StandardListItem",
+            title: "Available"
+        }
     };
 
     private static readonly OK_BUTTON_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.Button", id: "*categoryFilterDialog-acceptbutton" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.Button",
+            id: "*categoryFilterDialog-acceptbutton"
+        }
     };
 
     private static readonly BACK_BUTTON_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Category", metadata: "sap.m.Button", id: "*page-navButton" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Category",
+            metadata: "sap.m.Button",
+            id: "*page-navButton"
+        }
     };
 
     async waitForPageLoaded(): Promise<void> {

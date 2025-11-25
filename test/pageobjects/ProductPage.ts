@@ -3,22 +3,39 @@ import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
 class ProductPage {
     private static readonly PRODUCT_NAME_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.Title" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Product",
+            metadata: "sap.m.Title"
+        }
     };
 
     private static readonly PRODUCT_PRICE_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.ObjectNumber" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Product",
+            metadata: "sap.m.ObjectNumber"
+        }
     };
 
     private static readonly ADD_TO_CART_BUTTON_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Product", metadata: "sap.m.Button", text: [{ path: "i18n>addToCartShort" }] }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Product",
+            metadata: "sap.m.Button",
+            text: [{ path: "i18n>addToCartShort" }]
+        }
     };
 
     private static readonly CART_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Product",
             metadata: "sap.m.ToggleButton",
-            tooltip: [{ model: "i18n", path: "toCartButtonTooltip", value: "Show Shopping Cart", type: "string" }]
+            tooltip: [
+                {
+                    model: "i18n",
+                    path: "toCartButtonTooltip",
+                    value: "Show Shopping Cart",
+                    type: "string"
+                }
+            ]
         }
     };
 

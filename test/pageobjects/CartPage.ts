@@ -4,15 +4,25 @@ import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
 class CartPage extends BasePage {
     private static readonly CART_ITEM_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Cart", metadata: "sap.m.ObjectListItem" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Cart",
+            metadata: "sap.m.ObjectListItem"
+        }
     };
 
     private static readonly CART_BUTTON_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.ToggleButton" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Home",
+            metadata: "sap.m.ToggleButton"
+        }
     };
 
     private static readonly CART_PAGE_TITLE_SELECTOR: QmateSelector = {
-        elementProperties: { viewName: "sap.ui.demo.cart.view.Cart", metadata: "sap.m.Title", id: "*page-title" }
+        elementProperties: {
+            viewName: "sap.ui.demo.cart.view.Cart",
+            metadata: "sap.m.Title",
+            id: "*page-title"
+        }
     };
 
     async openCart(): Promise<void> {
