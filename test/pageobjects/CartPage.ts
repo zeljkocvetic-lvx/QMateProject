@@ -1,4 +1,4 @@
-import type { Product } from '../support/productInterface.ts';
+import type { product } from '../support/productInterface.ts';
 import { BasePage } from './BasePage.ts';
 import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
@@ -19,12 +19,12 @@ class CartPage extends BasePage {
         await ui5.userInteraction.click(CartPage.CART_BUTTON_SELECTOR);
     }
 
-    async getProducts(): Promise<Product[]> {
+    async getProducts(): Promise<product[]> {
         const elements = await ui5.element.getAllDisplayed(CartPage.CART_ITEM_SELECTOR);
-        const items: Product[] = [];
+        const items: product[] = [];
 
         for (let i = 0; i < elements.length; i++) {
-            const product: Product = {
+            const product: product = {
                 name: await ui5.element.getPropertyValue(CartPage.CART_ITEM_SELECTOR, 'title', i),
                 quantity: parseInt(await ui5.element.getPropertyValue(CartPage.CART_ITEM_SELECTOR, 'intro', i)),
                 price: parseFloat(await ui5.element.getPropertyValue(CartPage.CART_ITEM_SELECTOR, 'number', i))

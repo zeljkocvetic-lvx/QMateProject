@@ -3,7 +3,7 @@ import HomePage from '../pageobjects/HomePage.ts';
 import ProductPage from '../pageobjects/ProductPage.ts';
 import CartPage from '../pageobjects/CartPage.ts';
 import { attachScreenshot } from '../helpers/screenshotHelper.ts';
-import type { Product } from '../support/productInterface.ts';
+import type { product } from '../support/productInterface.ts';
 
 Given('Open the app', async function () {
     await HomePage.openApp();
@@ -25,7 +25,7 @@ When('Add first filtered product to cart', async function () {
     await ProductPage.waitForPageLoaded();
 
     const productDetails = await ProductPage.getProductDetails();
-    const stored: Product = {
+    const stored: product = {
         name: productDetails.name,
         price: productDetails.price,
         quantity: 1
@@ -49,7 +49,7 @@ When('Search product {string} and add {int} items to cart', async function (prod
 
     const productDetails = await ProductPage.getProductDetails();
 
-    const stored: Product = {
+    const stored: product = {
         name: productDetails.name,
         price: productDetails.price,
         quantity
@@ -74,7 +74,7 @@ Then('Verify cart contains exactly the products added with correct name, quantit
     const cartItems = await CartPage.getProducts();
 
     const Products = this.getProducts();
-    const formatProduct = (product: Product) => `${product.name}::${product.price}::${product.quantity}`;
+    const formatProduct = (product: product) => `${product.name}::${product.price}::${product.quantity}`;
     const actualCartProducts = cartItems.map(formatProduct).sort();
     const expectedCartProducts = Products.map(formatProduct).sort();
 
