@@ -180,9 +180,6 @@ export const config: WebdriverIO.Config = {
     // it and to build services around it. You can either apply a single function or an array of
     // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
     // resolved to continue.
-    // beforeScenario: async function (world) {
-    //     const customWorld = world as unknown as CustomWorld;
-    //     customWorld.addedProducts = [];
     // }
     // ,
     /**
@@ -263,19 +260,6 @@ export const config: WebdriverIO.Config = {
             allure.addParameter(param.name, param.value);
         });
     },
-
-    // beforeScenario: async function (world: any) {
-    //     const allure = require('@wdio/allure-reporter').default;
-
-    //     allure.addFeature(world.pickle.name);
-
-    //     if (world.pickle.parameters) {
-    //         world.pickle.parameters.forEach((param: any) => {
-    //             allure.addParameter(param.name, param.value);
-    //         });
-    //     }
-    // },
-
     /**
      *
      * Runs before a Cucumber Step.
