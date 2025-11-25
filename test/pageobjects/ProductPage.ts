@@ -1,21 +1,22 @@
 import type { ProductDetails } from '../support/interfaces.ts';
+import type { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
 class ProductPage {
-    PRODUCT_NAME_SELECTOR = {
+    private static readonly PRODUCT_NAME_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Product",
             metadata: "sap.m.Title"
         }
     };
 
-    PRODUCT_PRICE_SELECTOR = {
+    private static readonly PRODUCT_PRICE_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Product",
             metadata: "sap.m.ObjectNumber"
         }
     };
 
-    ADD_TO_CART_BUTTON_SELECTOR = {
+    private static readonly ADD_TO_CART_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Product",
             metadata: "sap.m.Button",
@@ -23,7 +24,7 @@ class ProductPage {
         }
     };
 
-    CART_BUTTON_SELECTOR = {
+    private static readonly CART_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Product",
             metadata: "sap.m.ToggleButton",
@@ -39,11 +40,11 @@ class ProductPage {
     };
 
     async getProductName(): Promise<string> {
-        return await ui5.element.getPropertyValue(this.PRODUCT_NAME_SELECTOR, "text");
+        return await ui5.element.getPropertyValue(ProductPage.PRODUCT_NAME_SELECTOR, "text");
     }
 
     async getProductPrice(): Promise<number> {
-        const priceRaw = await ui5.element.getPropertyValue(this.PRODUCT_PRICE_SELECTOR, "number");
+        const priceRaw = await ui5.element.getPropertyValue(ProductPage.PRODUCT_PRICE_SELECTOR, "number");
         return parseFloat(priceRaw);
     }
 
@@ -54,15 +55,15 @@ class ProductPage {
     }
 
     async clickAddToCartButton(): Promise<void> {
-        await ui5.userInteraction.click(this.ADD_TO_CART_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(ProductPage.ADD_TO_CART_BUTTON_SELECTOR);
     }
 
     async clickCartButton(): Promise<void> {
-        await ui5.userInteraction.click(this.CART_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(ProductPage.CART_BUTTON_SELECTOR);
     }
 
     async waitForPageLoaded(): Promise<void> {
-        await ui5.element.getDisplayed(this.PRODUCT_NAME_SELECTOR);
+        await ui5.element.getDisplayed(ProductPage.PRODUCT_NAME_SELECTOR);
     }
 }
 
