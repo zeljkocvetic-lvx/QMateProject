@@ -9,9 +9,3 @@ export interface StoredProduct extends ProductDetails {
 }
 
 export interface CartItem extends StoredProduct { }
-
-
-export interface QmateSelector {
-    elementProperties: Record<string, any>;
-    index?: number;
-}

@@ -1,5 +1,5 @@
 import { BasePage } from './BasePage.ts';
-import type { QmateSelector } from '../support/types.ts';
+import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
 
 export class HomePage extends BasePage {
