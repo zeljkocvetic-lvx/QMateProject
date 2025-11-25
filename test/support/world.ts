@@ -1,5 +1,5 @@
 import { setWorldConstructor } from '@cucumber/cucumber';
-import type { StoredProduct } from './types.ts';
+import type { StoredProduct } from './interfaces.ts';
 
 
 export class CustomWorld {

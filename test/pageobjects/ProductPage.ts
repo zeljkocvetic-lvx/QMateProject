@@ -1,4 +1,4 @@
-import type { ProductDetails } from '../support/types.ts';
+import type { ProductDetails } from '../support/interfaces.ts';
 
 class ProductPage {
     PRODUCT_NAME_SELECTOR = {

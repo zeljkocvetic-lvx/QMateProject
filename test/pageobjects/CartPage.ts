@@ -1,4 +1,4 @@
-import { CartItem } from '../support/types.ts';
+import { CartItem } from '../support/interfaces.ts';
 import { BasePage } from './BasePage.ts';
 import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 

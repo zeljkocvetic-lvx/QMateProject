@@ -4,7 +4,7 @@ import ProductPage from '../pageobjects/ProductPage.ts';
 import CartPage from '../pageobjects/CartPage.ts';
 import { attachScreenshot } from '../helpers/screenshotHelper.ts';
 import { CustomWorld } from '../support/world.ts';
-import type { StoredProduct } from '../support/types.ts';
+import type { StoredProduct } from '../support/interfaces.ts';
 
 
 Given('Open the app', async function () {
