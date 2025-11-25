@@ -76,8 +76,6 @@ When('Navigate to the cart', async function (this: CustomWorld) {
 Then('Verify cart contains exactly the products added with correct name, quantity and price', async function (this: CustomWorld) {
     const cartItems = await CartPage.getCartItems() as StoredProduct[];
 
-    await attachScreenshot('Cart Items Retrieved');
-
     const storedProducts = this.getStoredProducts();
     const formatProduct = (product: StoredProduct) => `${product.name}::${product.price}::${product.quantity}`;
     const actualCartProducts = cartItems.map(formatProduct).sort();
