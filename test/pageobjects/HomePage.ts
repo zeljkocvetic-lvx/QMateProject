@@ -45,7 +45,7 @@ export class HomePage extends BasePage {
         await this.waitForPageLoaded();
     }
 
-    getCategorySelector(categoryName: string): QmateSelector {
+    private getCategorySelector(categoryName: string): QmateSelector {
         return { elementProperties: { viewName: "sap.ui.demo.cart.view.Home", metadata: "sap.m.StandardListItem", title: categoryName } };
     }
 
