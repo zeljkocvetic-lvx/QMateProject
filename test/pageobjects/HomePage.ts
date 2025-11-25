@@ -3,7 +3,7 @@ import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
 
 export class HomePage extends BasePage {
-    private readonly SEARCH_FIELD_SELECTOR: QmateSelector = {
+    private static readonly SEARCH_FIELD_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Home",
             metadata: "sap.m.SearchField",
@@ -12,21 +12,21 @@ export class HomePage extends BasePage {
     };
 
 
-    private readonly PRODUCT_ITEM_SELECTOR: QmateSelector = {
+    private static readonly PRODUCT_ITEM_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.ObjectListItem"
         }
     };
 
-    private readonly SEARCH_RESULT_SELECTOR: QmateSelector = {
+    private static readonly SEARCH_RESULT_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Home",
             metadata: "sap.m.ObjectListItem"
         }
     };
 
-    private readonly FILTER_BUTTON_SELECTOR: QmateSelector = {
+    private static readonly FILTER_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.Button",
@@ -34,7 +34,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    private readonly AVAILABILITY_CRITERION_SELECTOR: QmateSelector = {
+    private static readonly AVAILABILITY_CRITERION_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.StandardListItem",
@@ -42,7 +42,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    private readonly AVAILABILITY_OPTION_AVAILABLE_SELECTOR: QmateSelector = {
+    private static readonly AVAILABILITY_OPTION_AVAILABLE_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.StandardListItem",
@@ -50,7 +50,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    private readonly OK_BUTTON_SELECTOR: QmateSelector = {
+    private static readonly OK_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.Button",
@@ -58,7 +58,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    private readonly BACK_BUTTON_SELECTOR: QmateSelector = {
+    private static readonly BACK_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.Button",
@@ -67,7 +67,7 @@ export class HomePage extends BasePage {
     };
 
     async waitForPageLoaded(): Promise<void> {
-        await ui5.assertion.expectToBeVisible(this.SEARCH_FIELD_SELECTOR);
+        await ui5.assertion.expectToBeVisible(HomePage.SEARCH_FIELD_SELECTOR);
     }
 
     async openApp(): Promise<void> {
@@ -93,26 +93,26 @@ export class HomePage extends BasePage {
     }
 
     async goBackToCategory(): Promise<void> {
-        await ui5.userInteraction.click(this.BACK_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(HomePage.BACK_BUTTON_SELECTOR);
     }
 
     async filterByAvailability(): Promise<void> {
-        await ui5.userInteraction.click(this.FILTER_BUTTON_SELECTOR);
-        await ui5.userInteraction.click(this.AVAILABILITY_CRITERION_SELECTOR);
-        await ui5.userInteraction.click(this.AVAILABILITY_OPTION_AVAILABLE_SELECTOR);
-        await ui5.userInteraction.click(this.OK_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(HomePage.FILTER_BUTTON_SELECTOR);
+        await ui5.userInteraction.click(HomePage.AVAILABILITY_CRITERION_SELECTOR);
+        await ui5.userInteraction.click(HomePage.AVAILABILITY_OPTION_AVAILABLE_SELECTOR);
+        await ui5.userInteraction.click(HomePage.OK_BUTTON_SELECTOR);
     }
 
     async searchProduct(name: string): Promise<void> {
-        await ui5.userInteraction.searchFor(this.SEARCH_FIELD_SELECTOR, name);
+        await ui5.userInteraction.searchFor(HomePage.SEARCH_FIELD_SELECTOR, name);
     }
 
     async openFirstProduct(): Promise<void> {
-        await ui5.userInteraction.click(this.PRODUCT_ITEM_SELECTOR, 0);
+        await ui5.userInteraction.click(HomePage.PRODUCT_ITEM_SELECTOR, 0);
     }
 
     async openFirstSearchResult(): Promise<void> {
-        await ui5.userInteraction.click(this.SEARCH_RESULT_SELECTOR, 0);
+        await ui5.userInteraction.click(HomePage.SEARCH_RESULT_SELECTOR, 0);
     }
 }
 
