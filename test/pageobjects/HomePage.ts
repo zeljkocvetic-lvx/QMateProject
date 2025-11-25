@@ -1,7 +1,9 @@
 import { BasePage } from './BasePage.ts';
+import type { QmateSelector } from '../support/types.ts';
+
 
 export class HomePage extends BasePage {
-    SEARCH_FIELD_SELECTOR = {
+    private readonly SEARCH_FIELD_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Home",
             metadata: "sap.m.SearchField",
@@ -9,21 +11,22 @@ export class HomePage extends BasePage {
         }
     };
 
-    PRODUCT_ITEM_SELECTOR = {
+
+    private readonly PRODUCT_ITEM_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.ObjectListItem"
         }
     };
 
-    SEARCH_RESULT_SELECTOR = {
+    private readonly SEARCH_RESULT_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Home",
             metadata: "sap.m.ObjectListItem"
         }
     };
 
-    FILTER_BUTTON_SELECTOR = {
+    private readonly FILTER_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.Button",
@@ -31,7 +34,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    AVAILABILITY_CRITERION_SELECTOR = {
+    private readonly AVAILABILITY_CRITERION_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.StandardListItem",
@@ -39,7 +42,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    AVAILABILITY_OPTION_SELECTOR = {
+    private readonly AVAILABILITY_OPTION_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.StandardListItem",
@@ -47,7 +50,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    OK_BUTTON_SELECTOR = {
+    private readonly OK_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.Button",
@@ -55,7 +58,7 @@ export class HomePage extends BasePage {
         }
     };
 
-    BACK_BUTTON_SELECTOR = {
+    private readonly BACK_BUTTON_SELECTOR: QmateSelector = {
         elementProperties: {
             viewName: "sap.ui.demo.cart.view.Category",
             metadata: "sap.m.Button",
@@ -74,7 +77,7 @@ export class HomePage extends BasePage {
         await this.waitForPageLoaded();
     }
 
-    getCategorySelector(categoryName: string): any {
+    getCategorySelector(categoryName: string): QmateSelector {
         return {
             elementProperties: {
                 viewName: "sap.ui.demo.cart.view.Home",
