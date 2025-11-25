@@ -1,14 +1,14 @@
 import { setWorldConstructor } from '@cucumber/cucumber';
-import type { product } from './productInterface.ts';
+import type { Product } from './productInterface.ts';
 
 export class CustomWorld {
-    private addedProducts: product[];
+    private addedProducts: Product[];
 
     constructor() {
         this.addedProducts = [];
     }
 
-    addProductToStorage(product: product) {
+    addProductToStorage(product: Product) {
         const existing = this.addedProducts.find(p => p.name === product.name);
         if (existing) {
             existing.quantity += product.quantity;
@@ -17,7 +17,7 @@ export class CustomWorld {
         }
     }
 
-    getProducts(): product[] {
+    getProducts(): Product[] {
         return [...this.addedProducts];
     }
 }
