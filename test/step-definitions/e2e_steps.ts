@@ -3,7 +3,9 @@ import HomePage from '../pageobjects/HomePage.ts';
 import ProductPage from '../pageobjects/ProductPage.ts';
 import CartPage from '../pageobjects/CartPage.ts';
 import { attachScreenshot } from '../helpers/screenshotHelper.ts';
-import { CustomWorld, StoredProduct } from '../support/world.ts';
+import { CustomWorld } from '../support/world.ts';
+import type { StoredProduct } from '../support/types.ts';
+
 
 Given('Open the app', async function () {
     await HomePage.openApp();

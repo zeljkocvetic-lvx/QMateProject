@@ -1,10 +1,5 @@
 import { setWorldConstructor } from '@cucumber/cucumber';
-
-export interface StoredProduct {
-    name: string;
-    price: number;
-    quantity: number;
-}
+import type { StoredProduct } from './types.ts';
 
 export class CustomWorld {
     public addedProducts: StoredProduct[];
