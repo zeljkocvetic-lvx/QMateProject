@@ -1,10 +1,4 @@
-import { BasePage } from './BasePage.ts';
-
-export interface ProductDetails {
-    name: string;
-    price: number;
-    quantity?: number;
-}
+import type { ProductDetails } from '../support/types.ts';
 
 class ProductPage {
     PRODUCT_NAME_SELECTOR = {

@@ -5,7 +5,7 @@ import CartPage from '../pageobjects/CartPage.ts';
 import { attachScreenshot } from '../helpers/screenshotHelper.ts';
 import { CustomWorld, StoredProduct } from '../support/world.ts';
 
-Given('Open the app', async function (this: CustomWorld) {
+Given('Open the app', async function () {
     await HomePage.openApp();
     await HomePage.waitForPageLoaded();
     await attachScreenshot('Home Page Opened');
