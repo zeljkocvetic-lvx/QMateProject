@@ -1,4 +1,4 @@
-import type { ProductDetails } from '../support/interfaces.ts';
+import type { Product } from '../support/productInterface.ts';
 import { QmateSelector } from 'wdio-qmate-service/modules/ui5/types/ui5.types';
 
 class ProductPage {
@@ -31,7 +31,7 @@ class ProductPage {
         return parseFloat(priceRaw);
     }
 
-    async getProductDetails(): Promise<ProductDetails> {
+    async getProductDetails(): Promise<Omit<Product, 'quantity'>> {
         const name = await this.getProductName();
         const price = await this.getProductPrice();
         return { name, price };

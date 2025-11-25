@@ -3,8 +3,7 @@ import HomePage from '../pageobjects/HomePage.ts';
 import ProductPage from '../pageobjects/ProductPage.ts';
 import CartPage from '../pageobjects/CartPage.ts';
 import { attachScreenshot } from '../helpers/screenshotHelper.ts';
-import type { StoredProduct } from '../support/interfaces.ts';
-
+import type { Product } from '../support/productInterface.ts';
 
 Given('Open the app', async function () {
     await HomePage.openApp();
@@ -26,7 +25,7 @@ When('Add first filtered product to cart', async function () {
     await ProductPage.waitForPageLoaded();
 
     const productDetails = await ProductPage.getProductDetails();
-    const stored: StoredProduct = {
+    const stored: Product = {
         name: productDetails.name,
         price: productDetails.price,
         quantity: 1
@@ -50,7 +49,7 @@ When('Search product {string} and add {int} items to cart', async function (prod
 
     const productDetails = await ProductPage.getProductDetails();
 
-    const stored: StoredProduct = {
+    const stored: Product = {
         name: productDetails.name,
         price: productDetails.price,
         quantity
@@ -72,12 +71,12 @@ When('Navigate to the cart', async function () {
 });
 
 Then('Verify cart contains exactly the products added with correct name, quantity and price', async function () {
-    const cartItems = await CartPage.getCartItems() as StoredProduct[];
+    const cartItems = await CartPage.getProducts();
 
-    const storedProducts = this.getStoredProducts();
-    const formatProduct = (product: StoredProduct) => `${product.name}::${product.price}::${product.quantity}`;
+    const Products = this.getProducts();
+    const formatProduct = (product: Product) => `${product.name}::${product.price}::${product.quantity}`;
     const actualCartProducts = cartItems.map(formatProduct).sort();
-    const expectedCartProducts = storedProducts.map(formatProduct).sort();
+    const expectedCartProducts = Products.map(formatProduct).sort();
 
     await common.assertion.expectEqual(actualCartProducts, expectedCartProducts);
     await attachScreenshot('Final Cart Verification');
