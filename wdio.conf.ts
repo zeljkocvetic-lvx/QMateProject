@@ -1,10 +1,12 @@
-export const config = {
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
     // ====================
     // WebdriverIO supports running e2e tests as well as unit and component tests.
     runner: 'local',
+    tsConfigPath: './tsconfig.json',
+
     //
     // ==================
     // Specify Test Files
@@ -20,18 +22,16 @@ export const config = {
     // The path of the spec files will be resolved relative from the directory of
     // of the config file unless it's absolute.
     //
-    specs: [
-        // use feature files for cucumber
-        './test/features/*.feature'
-    ],
+    specs: ['./test/features/**/*.feature'],
     // Patterns to exclude.
     exclude: [
-        './test/specs/end2end.spec.js'
+        // 'path/to/excluded/files'
     ],
     //
     // ============
     // Capabilities
     // ============
+
     // Define your capabilities here. WebdriverIO can run multiple capabilities at the same
     // time. Depending on the number of capabilities, WebdriverIO launches several test
     // sessions. Within your capabilities you can overwrite the spec and exclude options in
@@ -90,9 +90,9 @@ export const config = {
     // bail (default is 0 - don't bail, run all tests).
     bail: 0,
     //
-    // Set a base URL in order to shorten url command calls. If your url parameter starts
-    // with /, the base url gets prepended, not including the path portion of your baseUrl.
-    // If your url parameter starts without a scheme or / (like some/path), the base url
+    // Set a base URL in order to shorten url command calls. If your `url` parameter starts
+    // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
+    // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
     baseUrl: 'https://sapui5.hana.ondemand.com',
     //
@@ -110,7 +110,7 @@ export const config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: ['@sap_oss/wdio-qmate-service'],
+    services: ['@sap_oss/wdio-qmate-service',],
 
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -120,17 +120,6 @@ export const config = {
     // before running any tests.
     framework: 'cucumber',
 
-    //
-    // Cucumber options
-    cucumberOpts: {
-        // require step definitions
-        require: ['./test/step-definitions/*.js',
-            './test/support/world.js'
-        ],
-
-        // timeout for step definitions
-        timeout: 60000
-    },
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,
@@ -144,6 +133,7 @@ export const config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
+
     reporters: [['allure', {
         outputDir: 'allure-results',
         disableWebdriverStepsReporting: true,
@@ -151,12 +141,37 @@ export const config = {
         useCucumberStepReporter: true
     }]],
 
-    // Options to be passed to Mocha.
-    //See the full list at http://mochajs.org/
-    mochaOpts: { //uncoment for mocha
-        ui: 'bdd',
-        timeout: 60000
+    // If you are using Cucumber you need to specify the location of your step definitions.
+    cucumberOpts: {
+        // <string[]> (file/dir) require files before executing features
+        require: ['./test/step-definitions/*.ts',
+            './test/support/world.ts'
+        ],
+        // <boolean> show full backtrace for errors
+        backtrace: false,
+        // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
+        requireModule: [],
+        // <boolean> invoke formatters without executing steps
+        dryRun: false,
+        // <boolean> abort the run on first failure
+        failFast: false,
+        // <string[]> Only execute the scenarios with name matching the expression (repeatable).
+        name: [],
+        // <boolean> hide step definition snippets for pending steps
+        snippets: true,
+        // <boolean> hide source uris
+        source: true,
+        // <boolean> fail if there are any undefined or pending steps
+        strict: false,
+        // <string> (expression) only execute the features or scenarios with tags matching the expression
+        tagExpression: '',
+        // <number> timeout for step definitions
+        timeout: 60000,
+        // <boolean> Enable this config to treat undefined definitions as warnings.
+        ignoreUndefinedDefinitions: false
     },
+
+
     //
     // =====
     // Hooks
@@ -165,6 +180,8 @@ export const config = {
     // it and to build services around it. You can either apply a single function or an array of
     // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
     // resolved to continue.
+    // }
+    // ,
     /**
      * Gets executed once before all workers get launched.
      * @param {object} config wdio configuration object
@@ -202,23 +219,14 @@ export const config = {
      */
     // beforeSession: function (config, capabilities, specs, cid) {
     // },
-
-    beforeScenario: async function (uri, feature, scenario) {
-        const { allure } = require('@wdio/allure-reporter').default;
-        allure.addFeature(scenario.pickle.name);
-        scenario.pickle.parameters.forEach(param => {
-            allure.addParameter(param.name, param.value);
-        });
-    },
     /**
      * Gets executed before test execution begins. At this point you can access to all global
-     * variables like browser. It is the perfect place to define custom commands.
+     * variables like `browser`. It is the perfect place to define custom commands.
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    // before: async function () {
-    //     await browser.url('test-resources/sap/m/demokit/cart/webapp/index.html?sap-ui-theme=sap_horizon');
+    // before: function (capabilities, specs) {
     // },
     /**
      * Runs before a WebdriverIO command gets executed.
@@ -228,56 +236,83 @@ export const config = {
     // beforeCommand: function (commandName, args) {
     // },
     /**
-     * Hook that gets executed before the suite starts
-     * @param {object} suite suite details
+     * Cucumber Hooks
+     *
+     * Runs before a Cucumber Feature.
+     * @param {string}                   uri      path to feature file
+     * @param {GherkinDocument.IFeature} feature  Cucumber feature object
      */
-    // beforeSuite: function (suite) {
+    // beforeFeature: function (uri, feature) {
     // },
     /**
-     * Function to be executed before a test (in Mocha/Jasmine) starts.
+     *
+     * Runs before a Cucumber Scenario.
+     * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
+     * @param {object}                 context  Cucumber World object
      */
-    // beforeTest: function (test, context) {
+
+    beforeScenario: async function (world: any) {
+        const allure = require('@wdio/allure-reporter').default;
+
+        allure.addFeature(world.pickle.name);
+
+        world.pickle.parameters.forEach((param: any) => {
+            allure.addParameter(param.name, param.value);
+        });
+    },
+    /**
+     *
+     * Runs before a Cucumber Step.
+     * @param {Pickle.IPickleStep} step     step data
+     * @param {IPickle}            scenario scenario pickle
+     * @param {object}             context  Cucumber World object
+     */
+    // beforeStep: function (step, scenario, context) {
     // },
     /**
-     * Hook that gets executed before a hook within the suite starts (e.g. runs before calling
-     * beforeEach in Mocha)
+     *
+     * Runs after a Cucumber Step.
+     * @param {Pickle.IPickleStep} step             step data
+     * @param {IPickle}            scenario         scenario pickle
+     * @param {object}             result           results object containing scenario results
+     * @param {boolean}            result.passed    true if scenario has passed
+     * @param {string}             result.error     error stack if scenario failed
+     * @param {number}             result.duration  duration of scenario in milliseconds
+     * @param {object}             context          Cucumber World object
      */
-    // beforeHook: function (test, context, hookName) {
+    // afterStep: function (step, scenario, result, context) {
     // },
     /**
-     * Hook that gets executed after a hook within the suite starts (e.g. runs after calling
-     * afterEach in Mocha)
+     *
+     * Runs after a Cucumber Scenario.
+     * @param {ITestCaseHookParameter} world            world object containing information on pickle and test step
+     * @param {object}                 result           results object containing scenario results
+     * @param {boolean}                result.passed    true if scenario has passed
+     * @param {string}                 result.error     error stack if scenario failed
+     * @param {number}                 result.duration  duration of scenario in milliseconds
+     * @param {object}                 context          Cucumber World object
      */
-    // afterHook: function (test, context, { error, result, duration, passed, retries }, hookName) {
+    // afterScenario: async function (world, result, context) {
+    //     await browser.reloadSession();
     // },
 
-    afterScenario: async function (uri, feature, scenario, result, sourceLocation) {
+    afterScenario: async function (world, result, context) {
         await util.browser.clearBrowser();
     },
     /**
-     * 
-     * Function to be executed after a test (in Mocha/Jasmine only)
-     * @param {object}  test             test object
-     * @param {object}  context          scope object the test was executed with
-     * @param {Error}   result.error     error object in case the test fails, otherwise undefined
-     * @param {*}       result.result    return object of test function
-     * @param {number}  result.duration  duration of test
-     * @param {boolean} result.passed    true if test has passed, otherwise false
-     * @param {object}  result.retries   information about spec related retries, e.g. { attempts: 0, limit: 0 }
+     *
+     * Runs after a Cucumber Feature.
+     * @param {string}                   uri      path to feature file
+     * @param {GherkinDocument.IFeature} feature  Cucumber feature object
      */
+
+
     afterTest: async function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {
             const screenshot = await browser.takeScreenshot();
         }
     },
 
-
-    /**
-     * Hook that gets executed after the suite has ended
-     * @param {object} suite suite details
-     */
-    // afterSuite: function (suite) {
-    // },
     /**
      * Runs after a WebdriverIO command gets executed
      * @param {string} commandName hook command name
